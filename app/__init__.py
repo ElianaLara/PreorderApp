@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
@@ -8,6 +10,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+
+    template_path = os.path.join(os.path.dirname(__file__), "templates")
+    static_path = os.path.join(os.path.dirname(__file__), "static")
 
     # Import models after db is initialized
     from .models import Restaurant, MenuCategory, MenuItem, Customers, PreOrder, OrderItem
