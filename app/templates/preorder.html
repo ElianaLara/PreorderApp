@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Preorder{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="text-center mb-3">Preorders for {{ table.customer_name }}</h1>
+    <p class="text-center">People: {{ table.num_people }}</p>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="row mt-4">
+
+        <!-- Left column: People orders -->
+        <div class="col-md-6 mb-4">
+            <img src="{{ url_for('static', filename='menu.png') }}" alt="Delhi Newcastle" class="img-fluid rounded mb-3">
+            <h2>Order</h2>
+            {% if preorders %}
+              <ul class="list-group">
+                {% for o in preorders %}
+                  <li class="list-group-item d-flex justify-content-between align-items-start flex-wrap">
+                    <div>
+                      <strong>{{ o.person_name }}</strong>:
+                      {% for item in o.items %}
+                        {{ item.menu_item.name }}{% if not loop.last %}, {% endif %}
+                      {% endfor %}
+                      {% if o.notes %} | Notes: {{ o.notes }}{% endif %}
+                    </div>
+                    <div class="mt-2 mt-sm-0 d-flex gap-2 flex-wrap">
+                      <a href="{{ url_for('main.edit_preorder', preorder_id=o.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                      <form method="POST" action="{{ url_for('main.delete_preorder', preorder_id=o.id) }}">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No preorders yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Right column: Preorder Form -->
+        <div class="col-md-6">
+            <h2>Add a Preorder</h2>
+            <form method="POST" action="{{ url_for('main.preorder', code=table.code) }}">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.person_name.label(class="form-label") }}
+                    {{ form.person_name(class="form-control") }}
+                </div>
+
+                <!-- Dropdowns for menu -->
+                {% for field, label in [('drink', 'Drink'), ('starter', 'Starter'), ('main', 'Main Course'), ('dessert', 'Dessert')] %}
+                  <div class="mb-3">
+                      <label class="form-label">{{ label }}</label>
+                      <select class="form-select" name="{{ form[field].name }}">
+                        <option value="" disabled selected>Choose {{ label.lower() }}</option>
+                        {% for val, name in form[field].choices %}
+                          <option value="{{ val }}" {% if form[field].data == val %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+                {% endfor %}
+
+                <div class="mb-3">
+                    {{ form.notes.label(class="form-label") }}
+                    {{ form.notes(class="form-control") }}
+                </div>
+
+                <!-- Submit and Cancel Buttons -->
+                <div class="d-flex gap-2">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+                    {% if session.restaurant_name %}
+                        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">
+                            Go Back to Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

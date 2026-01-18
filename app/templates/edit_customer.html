@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Edit Customer{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Edit Customer</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-success">
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Enter customer name") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.phone.label(class="form-label") }}
+            {{ form.phone(class="form-control", placeholder="Enter phone number") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Enter email") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.table_number.label(class="form-label") }}
+            {{ form.table_number(class="form-control", placeholder="Enter table number") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.num_people.label(class="form-label") }}
+            {{ form.num_people(class="form-control", placeholder="Enter number of people") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.time.label(class="form-label") }}
+            {{ form.time(class="form-control") }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Customer</button>
+        <a href="{{ url_for('main.view_customers') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

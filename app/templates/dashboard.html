@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="centered">
+    <h1>Welcome, {{ session.restaurant_name }}</h1>
+
+    <div class="button-container">
+        <a href="{{ url_for('main.create_preorder') }}" class="btn btn-info btn-lg">Create Preorder</a>
+        <a href="{{ url_for('main.code' )}}" class="btn btn-info btn-lg">Manage Preorder</a>
+        <a href="{{ url_for('main.view_customers') }}" class="btn btn-info btn-lg">View Preorders</a>
+    </div>
+</div>
+
+<style>
+.centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    text-align: center;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* space between buttons */
+    margin-top: 30px;
+    width: 200px; /* all buttons same width */
+}
+
+.button-container a {
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+ds

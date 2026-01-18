@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Manage Preorder Tables{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage_tables.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const categoryItems = {{ category_items | tojson }};
+
+    // Build a mapping of person → items they ordered
+    const orderLookup = {};
+    {% for person in customer.preorders %}
+        orderLookup["{{ person.person_name }}"] = [
+            {% for item in person.items %}
+                "{{ item.menu_item.name }}"{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        ];
+    {% endfor %}
+</script>
+<script src="{{ url_for('static', filename='js/manage_tables.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <h4 class="text-center mb-4">
+        Tables for {{ customer.customer_name }} ({{ customer.num_people }} people)
+    </h4>
+
+        <!-- Button row -->
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <!-- Left: Head chairs toggle -->
+        <div>
+            <button id="toggle-head-chairs" class="btn btn-primary btn-sm">Add Head Chairs</button>
+        </div>
+
+        <!-- Right: Sort button and menu -->
+        <div class="position-relative">
+            <button id="sort-guests" class="btn btn-secondary btn-sm">
+                Sort <span class="sort-icon">⇅</span>
+            </button>
+
+            <!-- Sort buttons -->
+            <div id="sort-options" class="d-none position-absolute mt-2 end-0">
+                {% for category in category_items.keys() %}
+                    <button class="btn btn-secondary btn-sm mb-1 sort-option" data-category="{{ category }}">
+                        {{ category }}
+                    </button><br>
+                {% endfor %}
+            </div>
+
+            <!-- Hidden box for category items -->
+            <div id="category-box" class="d-none position-absolute mt-2 end-0" style="max-width: 500px;">
+                <h6 id="category-title">Items</h6>
+                <div id="item-list">
+                    <!-- Items will be inserted dynamically here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tables-container">
+        {% set num_tables = (customer.num_people // 2) + (customer.num_people % 2) %}
+
+        {% for table_index in range(1, num_tables + 1) %}
+            {% if table_index == num_tables and customer.num_people % 2 != 0 %}
+                {% set chairs = 1 %}
+            {% else %}
+                {% set chairs = 2 %}
+            {% endif %}
+
+            <div class="table-wrapper">
+                <!-- Top chair -->
+                {% if chairs >= 1 %}
+                <div class="chair top" ondragover="allowDrop(event)" ondrop="drop(event)">🪑</div>
+                {% endif %}
+
+                <!-- Table box -->
+                <div class="table-box"></div>
+
+                <!-- Bottom chair -->
+                {% if chairs == 2 %}
+                <div class="chair bottom" ondragover="allowDrop(event)" ondrop="drop(event)">🪑</div>
+                {% endif %}
+
+                <!-- Side chairs -->
+                {% if table_index == num_tables %}
+                    <!-- Last table left chair -->
+                    <div class="chair left side-chair last-table-left" ondragover="allowDrop(event)" ondrop="drop(event)" style="display:none;">🪑</div>
+                {% endif %}
+
+                {% if table_index == 1 and customer.num_people % 2 == 0 %}
+                    <!-- First table right and left chair -->
+                    <div class="chair right side-chair first-table-left" ondragover="allowDrop(event)" ondrop="drop(event)" style="display:none;">🪑</div>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="guest-zone">
+
+    <h5 class="text-center mb-3">People at this table</h5>
+
+    <div class="guest-cards">
+
+    {% for person in customer.preorders %}
+        <div class="guest-card"
+             onclick="toggleGuest(this)"
+             data-items='[
+                {% for item in person.items %}
+                    "{{ item.menu_item.name }}"{% if not loop.last %},{% endif %}
+                {% endfor %}
+             ]'>
+
+            <span class="guest-name"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-person="{{ person.person_name }}">
+                {{ person.person_name }}
+            </span>
+
+            <div class="guest-details">
+                {% if person.notes %}
+                    <strong>Notes:</strong> {{ person.notes }}<br>
+                {% endif %}
+
+                <strong>Order:</strong>
+                <ul>
+                    {% for item in person.items %}
+                        <li>{{ item.menu_item.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+
+    </div>
+    </div>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Go Back to Dashboard</a>
+</div>
+
+{% endblock %}

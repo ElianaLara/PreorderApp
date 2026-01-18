@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Add Customer{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Add New Customer</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.phone.label(class="form-label") }}
+            {{ form.phone(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.table_number.label(class="form-label") }}
+            {{ form.table_number(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.num_people.label(class="form-label") }}
+            {{ form.num_people(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.time.label(class="form-label") }}
+            {{ form.time(class="form-control") }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create</button>
+            <!-- Go Back to Dashboard Button -->
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Go Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}

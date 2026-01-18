@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="centered">
+    <h1>Login</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-info" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="login-form">
+        {{ form.hidden_tag() }}
+
+        <div>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control") }}
+        </div>
+        <div>
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control") }}
+        </div>
+
+        <input type="submit" value="Login" class="btn btn-primary">
+    </form>
+</div>
+
+<style>
+.centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form label {
+    margin-top: 10px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form input[type="email"] {
+    margin: 5px 0 15px 0;
+    padding: 8px;
+    width: 250px;
+    box-sizing: border-box;
+}
+
+.login-form input[type="submit"] {
+    margin-top: 10px;
+    padding: 8px 20px;
+}
+</style>
+{% endblock %}

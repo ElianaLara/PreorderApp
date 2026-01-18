@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}WELCOME{% endblock %}
+
+{% block content %}
+<div class="centered">
+    <h1>Welcome</h1>
+    <p>Manage your pre-order here!</p>
+    <!-- Button to Register page -->
+    <a href="{{ url_for('main.code') }}" class="btn btn-primary mt-3 mb-4">Enter Code</a>
+    <p>Or log in!</p>
+    <a href="{{ url_for('main.login') }}" class="btn btn-primary mt-3">Log in</a>
+</div>
+
+<style>
+.centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* vertical center */
+    align-items: center;      /* horizontal center */
+    height: 80vh;
+    text-align: center;
+}
+</style>
+{% endblock %}

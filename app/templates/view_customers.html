@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">All Pre-Orders</h2>
+
+    <!-- Search Bar -->
+    <div class="mb-3">
+        <input type="text" id="customersSearch" class="form-control" placeholder="Search customers...">
+    </div>
+
+
+    <table class="table table-hover table-bordered align-middle text-center" id="customersTable">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Table</th>
+                <th>People</th>
+                <th>Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.customer_name }}</td>
+                <td>{{ customer.code }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.table_number }}</td>
+                <td>{{ customer.num_people }}</td>
+                <td>{{ customer.time }}</td>
+                <td>
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <a href="{{ url_for('main.edit_customer', customer_id=customer.id) }}"
+                           class="btn btn-sm btn-warning">Edit Details</a>
+                        <a href="{{ url_for('main.preorder', code=customer.code) }}"
+                           class="btn btn-sm btn-info">Edit Preorder</a>
+                        <a href="{{ url_for('main.see_preorder', code=customer.code) }}"
+                           class="btn btn-sm btn-success">See Preorder</a>
+                        <form method="POST" action="{{ url_for('main.delete_customer', customer_id=customer.id) }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Go Back to Dashboard</a>
+    </div>
+</div>
+
+<!-- include the serach bar -->
+<script src="{{ url_for('static', filename='js/table_search.js') }}"></script>
+<script>
+    enableTableSearch('customersSearch', 'customersTable');
+</script>
+{% endblock %}

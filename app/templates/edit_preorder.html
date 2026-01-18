@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Edit Preorder{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Edit Preorder for {{ preorder.person_name }}</h1>
+    <p class="text-center">Table Number: {{ preorder.customer.table_number }} | Customer: {{ preorder.customer.customer_name }}</p>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Edit preorder form -->
+    <form method="POST" action="{{ url_for('main.edit_preorder', preorder_id=preorder.id) }}">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.person_name.label(class="form-label") }}
+            {{ form.person_name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.drink.label(class="form-label") }}
+            {{ form.drink(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.starter.label(class="form-label") }}
+            {{ form.starter(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.main.label(class="form-label") }}
+            {{ form.main(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.dessert.label(class="form-label") }}
+            {{ form.dessert(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.notes.label(class="form-label") }}
+            {{ form.notes(class="form-control") }}
+        </div>
+
+        {{ form.submit(class="btn btn-warning") }}
+        <a href="{{ url_for('main.preorder', code=preorder.customer.code) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<style>
+.container {
+    max-width: 600px;
+    margin: auto;
+    margin-top: 2rem;
+    text-align: center;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,150 @@
+/* Tables container */
+.tables-container {
+    display: flex; /* Align Horizontally */
+    justify-content: center;
+    gap: 0; /* tables together */
+    flex-wrap: wrap; /* Adds another line */
+    margin-top: 100px;
+}
+
+.table-wrapper {
+    display: flex; /* Vertical */
+    flex-direction: column;
+    align-items: center;
+    margin: 0; /* no space between tables */
+    position: relative; /* for side chairs */
+}
+
+/* Table box */
+.table-box {
+    width: 100px;
+    height: 60px;
+    background-color: #8b5e3c;
+    border-radius: 6px;
+    z-index: 1; /* Overlap (stay down) */
+    position: relative;
+}
+
+/* Chair styling */
+.chair {
+    width: 50px;
+    height: 50px;
+    color: white;
+    border-radius: 50%; /* Round */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 60px;
+    position: relative; /* Can be moved */
+    z-index: 2; /* Chairs on top */
+}
+
+/* Top chair above the table */
+.chair.top {
+    margin-bottom: 5px;
+}
+
+/* Bottom chair below the table */
+.chair.bottom {
+    margin-top: 5px;
+}
+
+/* Side chairs */
+.chair.side-chair {
+    position: absolute;  /* Can not be moved */
+    top: 50%;
+    transform: translateY(-50%); /* centers the chair vertically next to the table*/
+    font-size: 60px;
+}
+
+/* Left chair */
+.chair.left {
+    left: 3px;
+}
+
+
+/* Right chair of first table */
+.chair.first-table-left {
+    right: 100px;
+}
+
+.guest-zone {
+    margin-top: 100px;          /* push section down */
+    padding-top: 30px;
+    padding-bottom: 40px;
+    border-top: 1px dashed #8f2a2a; /* ------ */
+    text-align: center;          /* center the section */
+}
+
+.guest-cards {
+    display: flex;
+    flex-direction: row;        /* make row */
+    flex-wrap: nowrap;          /* keep in one line, scroll if needed */
+    justify-content: center;    /* center the cards */
+    gap: 12px;                  /* space between cards */
+    overflow-x: auto;           /* scroll horizontally if too many cards */
+    padding: 10px 0;
+    align-items: flex-start;
+}
+
+.guest-card {
+    background: #212529;
+    color: white;
+    padding: 10px 16px; /* add space inside an element */
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: 500; /* medium bold */
+
+    display: flex;
+    flex-direction: column;  /* content inside stacks vertically */
+    align-items: center;
+    width: 200px;
+    flex-shrink: 0;
+
+    height: auto;            /* let height be automatic */
+    max-height: none;         /* do not constrain height */
+}
+
+
+.guest-details {
+    display: none;
+    width: 100%;
+    border-radius: 12px;
+    padding: 8px 8px;
+    margin-top: 8px;
+    text-align: left;
+}
+
+
+.guest-card.expanded {
+    transform: scale(1.05); /* slight pop effect */
+    z-index: 2;             /* bring forward */
+}
+
+.chair-name {
+    position: absolute;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: black;
+    white-space: nowrap;
+    pointer-events: none; /* so it doesn't block dragging */
+    padding: 5px 6px;
+    border-radius: 16px;
+}
+
+.chair-name.highlight {
+    background-color: #2E7D32 ; /* green background */
+    color: white ;              /* text white */
+    transform: scale(1.08);
+}
+
+#sort-options button {
+    width: 100px;
+}
+
+#sort-guests {
+    width: 100px;
+}
+

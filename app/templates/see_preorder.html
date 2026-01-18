@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Preorders for {{ customer.customer_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Preorders for {{ customer.customer_name }}</h2>
+    <p class="text-center">
+        Table Number: {{ customer.table_number }} |
+        Number of People: {{ customer.num_people }} |
+        Time: {{ customer.time }}
+    </p>
+
+    {% if preorders %}
+        <!-- Search Bar -->
+        <div class="mb-3">
+            <input type="text" id="preordersSearch" class="form-control" placeholder="Search...">
+        </div>
+
+        <table class="table table-bordered table-striped mt-4" id="preordersTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Person Name</th>
+                    <th>Notes</th>
+                    <th>Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for preorder in preorders %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ preorder.person_name }}</td>
+                    <td>{{ preorder.notes or '-' }}</td>
+                    <td>
+                        {% if preorder.items %}
+                            <ul>
+                                {% for item in preorder.items %}
+                                    <li>{{ item.menu_item.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            No items
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center mt-4">No preorders found for this customer.</p>
+    {% endif %}
+
+    <div class="text-center mt-3">
+        <a href="{{ url_for('main.view_customers') }}" class="btn btn-secondary">Back to Customers</a>
+    </div>
+</div>
+
+<!-- Include search bar -->
+<script src="{{ url_for('static', filename='js/table_search.js') }}"></script>
+<script>
+    enableTableSearch('preordersSearch', 'preordersTable');
+</script>
+{% endblock %}
+
