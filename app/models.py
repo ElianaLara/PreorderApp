@@ -90,3 +90,12 @@ class MenuTag(db.Model):
     __tablename__ = 'menu_tags'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False, unique=True)  #"GF", "Vegan"
+
+class MenuItemSize(db.Model):
+    __tablename__ = 'menu_item_sizes'
+    id = db.Column(db.Integer, primary_key=True)
+    menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'), nullable=False)
+    size = db.Column(db.String(50), nullable=False)  # Small, Medium, Large or for wines
+    price = db.Column(db.Float, nullable=False)
+
+    menu_item = db.relationship('MenuItem', backref='sizes')

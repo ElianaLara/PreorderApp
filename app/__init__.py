@@ -1,3 +1,5 @@
+from unicodedata import category
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from models import Restaurant, MenuCategory, Customers, PreOrder, OrderItem, MenuItem, MenuTag
@@ -66,6 +68,8 @@ def seed_data():
     db.session.commit()
 
     # --- Menu Items ---
+
+    # Cocktails
     goan_zombie = MenuItem(name="Goan Zombie", category=cocktails,  description="Our Goan Zombie cocktail, inspired by Bollywood, is a tropical mix of spiced and coconut rum, coconut syrup, Grenadine, and a fearless attitude.")
     rose = MenuItem(name="The Emperor´s Rose", category=cocktails,  description="A beautiful sunset-inspired cocktail of pink and red hues. A lychee delight of vodka, lychee liqueur, and rose and cardamom syrup.")
     amber = MenuItem(name="The Amber Solstice", category=cocktails, description="A silken blend of Disaronno Velvet, spiced rum, and coffee liqueur, gently lit with vanilla decadence")
@@ -77,6 +81,13 @@ def seed_data():
     new_ice = MenuItem(name="New Delhi Iced Tea", category=cocktails, description="A tropical twist with mango vodka, Indian spiced rum, and classic Long Island Iced Tea elements.")
     daiquiri = MenuItem(name="New Delhi Iced Tea", category=cocktails, description="A timeless blend of rum, fresh lime juice, and simple syrup, perfectly balanced and refreshing.")
 
+    # Mocktails
+    dilliwali = MenuItem(name="Dilliwali Lemonade", category=mocktails, description="A unique blend of spices, mint, lime and lemon muddled together for our take on North India's favourite drink known as Shikanji.")
+    pink = MenuItem(name="Pink Memsaab", category=mocktails, description="A rich fruity mix of berries, Indian plum and pomegranate, topped with a deliciously chilled lemonade for an exotic and energising taste.")
+    ruby = MenuItem(name="Ruby Royale", category=mocktails, description="Pomegranata with a seasonal fruit mix of apple and lemon, gently lifted with cinnamon and soda.")
+    dehli =  MenuItem(name="Ruby Royale", category=mocktails, description="A Pina Colada with a nod to Delhi's famous Mohabbat Ka Sharbat, coconut milk, watermelon, pineapple and a touch of rose syrup.")
+
+    # Wines
     chicken_curry = MenuItem(name="Chicken Curry", category=curry)
     chicken_curry.tags.append(gf_tag)
 
