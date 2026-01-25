@@ -84,6 +84,11 @@ class MenuItem(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('menu_categories.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text) #Description
+    tags = db.relationship(
+        "MenuTag",
+        secondary=menu_item_tags,
+        backref=db.backref("menu_items", lazy="dynamic")
+    )
 
 
 class MenuTag(db.Model):
@@ -92,9 +97,11 @@ class MenuTag(db.Model):
     name = db.Column(db.String(50), nullable=False, unique=True)  #"GF", "Vegan"
 
 class MenuItemSize(db.Model):
-    __tablename__ = 'menu_item_sizes'
+    __tablename__ = "menu_item_sizes"
     id = db.Column(db.Integer, primary_key=True)
-    menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'), nullable=False)
-    size = db.Column(db.String(50), nullable=False)  # Small, Medium, Large or for wines
+    menu_item_id = db.Column(db.Integer, db.ForeignKey("menu_items.id"))
+    size = db.Column(db.String, nullable=False)
 
-    menu_item = db.relationship('MenuItem', backref='sizes')
+    __table_args__ = (db.UniqueConstraint("menu_item_id", "size", name="uq_menuitem_size"),)
+
+    menu_item = db.relationship("MenuItem", backref="sizes")

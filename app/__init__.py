@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from models import Restaurant, MenuCategory, Customers, PreOrder, OrderItem, MenuItem, MenuTag, MenuItemSize
 from config import Config
 db = SQLAlchemy()
 
@@ -15,7 +14,7 @@ def create_app():
     # Register blueprints
     from .routes import main
     app.register_blueprint(main)
-
+    from . import models
     db.init_app(app)
 
     # Create tables
@@ -31,6 +30,7 @@ def create_app():
 # Seed example data
 # ----------------------------
 def seed_data():
+    from .models import Restaurant, MenuCategory, Customers, PreOrder, OrderItem, MenuItem, MenuTag, MenuItemSize
     # --- Restaurants ---
     resto = Restaurant(name="My Delhi Newcastle", email="admin@resto.com", password="1234")
 
@@ -73,7 +73,7 @@ def seed_data():
     # --- Menu Tags ---
     gf_tag = MenuTag(name="GF")  # gluten-free
     vegan_tag = MenuTag(name="Vegan")
-    vegetarian_tag = MenuTag(name="Vegan")
+    vegetarian_tag = MenuTag(name="Vegetarian")
 
     db.session.add_all([gf_tag, vegan_tag, vegetarian_tag])
     db.session.commit()
