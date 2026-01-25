@@ -7,21 +7,38 @@
 </head>
 <body>
 
-  <div class="container">
-    <div class="card">
-      <h1>Pre-Orders</h1>
-      <p class="subtitle">Enter your pre-order code to continue</p>
+<div class="container">
+  <div class="card">
+    <h1>Pre-Orders</h1>
+    <p class="subtitle">Enter your pre-order code to continue</p>
 
-      <label for="code">Pre-Order Code</label>
-      <input id="code" type="text" placeholder="Enter your code">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-message">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-      <button>Continue to Order</button>
+    <form method="POST">
+      {{ form.hidden_tag() }}
 
-      <div class="divider"></div>
+      <label>Pre-Order Code</label>
+      {{ form.code(class="form-control", placeholder="Enter your code") }}
 
-      <a href="#" class="login-link">Restaurant Login →</a>
-    </div>
+      {{ form.submit(class="button") }}
+    </form>
+
+    <div class="divider"></div>
+
+    <a href="#" class="login-link">Restaurant Login →</a>
   </div>
+</div>
 
 </body>
+</html>
+
 </html>

@@ -26,13 +26,9 @@ menu_items = {
     "Drink": ["Coke", "Mango Lassi", "Goan Zombie", "Orange Juice"]
 }
 
-@main.route("/")
+
+@main.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template("home.html")
-
-
-@main.route('/code', methods=['GET', 'POST'])
-def code():
     form = CodeForm()
     if form.validate_on_submit():
         user_code = form.code.data
@@ -41,16 +37,13 @@ def code():
         table = Customers.query.filter_by(code=user_code).first()
         if table:
             flash(f'Code {user_code} is valid! Redirecting to preorder...')
-            restaurant = session.get('restaurant_name')
 
-            if not restaurant:
-                return redirect(url_for('main.preorder', code=user_code))
-            else:
-                return redirect(url_for('main.manage_preorder', code=user_code))
+            #return redirect(url_for('main.manage_preorder', code=user_code))
+            return render_template("preorder.html")
 
         else:
             # Code is invalid
             flash(f'Code {user_code} is not valid. Please try again.')
-            return redirect(url_for('main.code'))
+            return redirect(url_for('main.home'))
 
-    return render_template('code.html', form=form)
+    return render_template('home.html', form=form)
