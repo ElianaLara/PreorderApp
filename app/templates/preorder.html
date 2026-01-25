@@ -19,7 +19,7 @@
 <section class="menu">
   <h2>Menu</h2>
 
-  {% macro render_category(cat_name, cat_data) %}
+  {% macro render_category(cat_name, cat_data, current_subcat=None) %}
     <div class="category">
       <div class="category-header">
         {{ cat_name }}
@@ -34,8 +34,8 @@
       <div class="items">
         {# Recursive subcategories #}
         {% if cat_data.get("subcategories") %}
-          {% for sub_name, sub_data in cat_data["subcategories"].items() %}
-            {{ render_category(sub_name, sub_data) }}
+          {% for sub_name, sub_data in cat_data.get("subcategories", {}).items() %}
+            {{ render_category(sub_name, sub_data, current_subcat=sub_name) }}
           {% endfor %}
         {% endif %}
 
@@ -56,7 +56,12 @@
                   {% endfor %}
                 </select>
               {% endif %}
-              <button>Add</button>
+              <button class="add-btn"
+                      data-name="{{ item['name'] }}"
+                      data-size="{{ item['sizes'][0] if item.get('sizes') else '' }}"
+                      data-subcat="{{ current_subcat or cat_name }}">
+                Add
+              </button>
             </div>
           {% endfor %}
         {% endif %}
@@ -75,8 +80,10 @@
     <label>Your Name</label>
     <input type="text" placeholder="Enter your name">
 
-    <h3>Your Items</h3>
-    <p class="empty">No items added yet</p>
+    <label>Your Items</label>
+    <ul id="your-items-list">
+    <!-- Items will appear here -->
+    </ul>
 
     <label>Notes:</label>
     <input type="text" placeholder="Example: Gluten Free">

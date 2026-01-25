@@ -144,7 +144,7 @@ def seed_data():
     veg_platter = MenuItem(name="Veg Platter", category=street_plates, description="Onion Bhaji, Cauliflower Manchurian and Panner tikka")
     veg_platter.tags.append(vegetarian_tag)
 
-    non_platter = MenuItem(name="Veg Platter", category=street_plates, description="Delhi Chicken Tikka, Chilli Chicken, Onion Bhaji")
+    non_platter = MenuItem(name="Non-Veg Platter", category=street_plates, description="Delhi Chicken Tikka, Chilli Chicken, Onion Bhaji")
 
     vegan_platter = MenuItem(name="Vegan Platter", category=street_plates, description="Onion Bhaji, Cauliflower Manchurian and Vegetable Samosa")
     vegan_platter.tags.append(vegan_tag)
