@@ -17,49 +17,55 @@
 
   <!-- MENU -->
   <section class="menu">
-    <h2>Menu</h2>
-
-    {% macro render_menu(level) %}
-      <div class="{{ level.class }}">
-        <div class="{{ level.header_class }}">
-          <span>{{ level.name }}</span>
-          <span class="toggle">+</span>
-        </div>
-
-        <div class="{{ level.items_class }}">
-          {% if level.items is mapping %}
-            {% for subname, subitems in level.items.items() %}
-              {{ render_menu({
-                'name': subname,
-                'items': subitems,
-                'class': 'subcategory',
-                'header_class': 'subcategory-header',
-                'items_class': 'items'
-              }) }}
-            {% endfor %}
-          {% elif level.items is iterable %}
-            {% for item in level.items %}
-              <div class="item">
-                <h4>{{ item }}</h4>
-                <button>Add to Order</button>
-              </div>
-            {% endfor %}
-          {% endif %}
-        </div>
-      </div>
-    {% endmacro %}
-
-    {% for category, subcategories in menu_items.items() %}
-      {{ render_menu({
-        'name': category,
-        'items': subcategories,
-        'class': 'category',
-        'header_class': 'category-header',
-        'items_class': 'items'
-      }) }}
-    {% endfor %}
-
-  </section>
+     <h2>Menu</h2>
+        {% for category_name, subcategories in menu_items.items() %}
+          <div class="category">
+            <div class="category-header">
+              {{ category_name }} <span class="toggle">+</span>
+            </div>
+            <div class="items">
+              {% for subcat_name, items in subcategories.items() %}
+                {% if items is mapping %}
+                <!-- Nested subcategories (like Wines) -->
+                <div class="subcategory">
+                  <div class="subcategory-header">{{ subcat_name }} <span class="toggle">+</span></div>
+                  <div class="items">
+                    {% for nested_subcat_name, nested_items in items.items() %}
+                    <div class="subcategory">
+                      <div class="subcategory-header">{{ nested_subcat_name }} <span class="toggle">+</span></div>
+                      <div class="items">
+                        {% if nested_items %}
+                          {% for item in nested_items %}
+                          <div class="item"><h3>{{ item }}</h3><button>Add</button></div>
+                          {% endfor %}
+                        {% else %}
+                          <p>Coming soon</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% else %}
+                <!-- Regular subcategories -->
+                <div class="subcategory">
+                  <div class="subcategory-header">{{ subcat_name }} <span class="toggle">+</span></div>
+                  <div class="items">
+                    {% if items %}
+                      {% for item in items %}
+                      <div class="item"><h3>{{ item }}</h3><button>Add</button></div>
+                      {% endfor %}
+                    {% else %}
+                      <p>Coming soon</p>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+</section>
 
   <!-- ORDER PANEL -->
   <aside class="order">
@@ -77,14 +83,7 @@
 
 </main>
 
-<script>
-  // Toggle categories and subcategories
-  document.querySelectorAll('.category-header, .subcategory-header').forEach(header => {
-    header.addEventListener('click', () => {
-      header.parentElement.classList.toggle('open');
-    });
-  });
-</script>
+<script src="{{ url_for('static', filename='js/preorder.js') }}"></script>
 
 </body>
 </html>

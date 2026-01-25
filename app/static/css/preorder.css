@@ -64,7 +64,8 @@ body {
   padding: 1rem;
 }
 
-.category.open .items {
+.category.open > .items,
+.subcategory.open > .items {
   display: block;
 }
 

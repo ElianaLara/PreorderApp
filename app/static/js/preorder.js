@@ -1,13 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const headers = document.querySelectorAll(".category-header");
+  // Select all headers, both categories and subcategories
+  const headers = document.querySelectorAll(".category-header, .subcategory-header");
 
   headers.forEach(header => {
     header.addEventListener("click", () => {
-      const category = header.parentElement;
-      category.classList.toggle("open");
+      // Find the closest container with category/subcategory class
+      const container = header.closest(".category, .subcategory");
+      container.classList.toggle("open");
 
+      // Change the + / − sign
       const toggle = header.querySelector(".toggle");
-      toggle.textContent = category.classList.contains("open") ? "−" : "+";
+      toggle.textContent = container.classList.contains("open") ? "−" : "+";
     });
   });
 });
