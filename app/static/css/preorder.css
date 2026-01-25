@@ -43,16 +43,22 @@ body {
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   margin-bottom: 1rem;
+  padding: 10px;
 }
 
 .category-header {
-  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
   color: #2f7cf6;
   cursor: pointer;
+  padding: 10px;
+}
+
+.category-header + p {  /* ensures description is inside the container */
+  margin: 8px 0;
+  padding-left: 15px;
 }
 
 .toggle {
@@ -92,6 +98,20 @@ body {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+}
+
+/* Style tags green */
+.item p.tags {
+  color: #529752;
+  margin: 4px 0;
+  padding: 0.20rem;
+}
+
+/* Style spice level red */
+.item p.spice-level {
+  color: #bf3e3e;
+  margin: 4px 0;
+  padding: 0.20rem;
 }
 
 /* ORDER PANEL */

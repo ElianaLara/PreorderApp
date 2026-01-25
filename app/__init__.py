@@ -72,7 +72,7 @@ def seed_data():
     db.session.commit()
 
     # --- Menu Tags ---
-    gf_tag = MenuTag(name="GF")  # gluten-free
+    gf_tag = MenuTag(name="Gluten Free version available")  # gluten-free
     vegan_tag = MenuTag(name="Vegan")
     vegetarian_tag = MenuTag(name="Vegetarian")
 
@@ -166,7 +166,7 @@ def seed_data():
     tawa.tags.append(vegetarian_tag)
 
     kozhi = MenuItem(name="Kozhi Chicken Curry", category=curry, spice_level=high, description="Hailing from a seaport on the East coast of India, this spicy coconut-flavoured chicken curry is rich in tantalising spices.")
-
+    kozhi.tags.append(gf_tag)
 
     db.session.add_all([veg_platter, non_platter, vegan_platter, railway, gosht, butter, bhuna, fish, panner, grandma, tawa, kozhi])
     db.session.commit()
@@ -175,7 +175,7 @@ def seed_data():
     # --- Customers & Preorders ---
     customer1 = Customers(
         restaurant_id=resto.id,
-        customer_name="Alice",
+        customer_name="Alice Johnson",
         code=101,
         email="alice@email.com",
         num_people=9,

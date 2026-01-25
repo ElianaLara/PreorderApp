@@ -45,8 +45,9 @@
             <div class="item">
               <h3>{{ item["name"] }}</h3>
               {% if item.get("description") %}<p>{{ item["description"] }}</p>{% endif %}
-              {% if item.get("spice_level") %}<p>Spice Level: {{ item["spice_level"] }}</p>{% endif %}
-              {% if item.get("tags") %}<p>Tags: {{ item["tags"] | join(', ') }}</p>{% endif %}
+              {% if item.get("tags") %}<p class="tags">Tags: {{ item["tags"] | join(', ') }}</p>{% endif %}
+              {% if item.get("spice_level") %}<p class="spice-level">Spice Level: {{ item["spice_level"] }}</p>{% endif %}
+
               {% if item.get("sizes") %}
                 <label for="size-{{ item["name"] }}">Size:</label>
                 <select id="size-{{ item["name"] }}">
