@@ -8,11 +8,15 @@ body {
   background: #f5f7fb;
 }
 
-/* Header */
+/* HEADER */
 .top-bar {
   background: #2f7cf6;
   color: white;
-  padding: 2rem;
+  padding: 1.5rem 2rem;
+}
+
+.top-bar h1 {
+  margin: 0.5rem 0 0;
 }
 
 .back {
@@ -21,15 +25,7 @@ body {
   font-weight: 500;
 }
 
-.top-content h1 {
-  margin: 0.5rem 0;
-}
-
-.sub {
-  opacity: 0.9;
-}
-
-/* Layout */
+/* LAYOUT */
 .layout {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -37,7 +33,7 @@ body {
   padding: 2rem;
 }
 
-/* Menu */
+/* MENU */
 .menu h2 {
   margin-bottom: 1rem;
 }
@@ -45,19 +41,35 @@ body {
 .category {
   background: white;
   border-radius: 12px;
-  margin-bottom: 1rem;
   border: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
 }
 
 .category-header {
   padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-weight: 600;
   color: #2f7cf6;
   cursor: pointer;
 }
 
+.toggle {
+  font-size: 1.2rem;
+}
+
 .items {
+  display: none;
   padding: 1rem;
+}
+
+.category.open .items {
+  display: block;
+}
+
+.category.open .toggle {
+  content: "-";
 }
 
 .item {
@@ -81,7 +93,7 @@ body {
   cursor: pointer;
 }
 
-/* Order Panel */
+/* ORDER PANEL */
 .order {
   background: white;
   padding: 1.5rem;
@@ -91,21 +103,15 @@ body {
 }
 
 .order label {
-  display: block;
-  margin-bottom: 0.5rem;
   font-weight: 500;
 }
 
 .order input {
   width: 100%;
   padding: 0.75rem;
+  margin: 0.5rem 0 1.5rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-  margin-bottom: 1.5rem;
-}
-
-.order h3 {
-  margin-bottom: 0.5rem;
 }
 
 .empty {
