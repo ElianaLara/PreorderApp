@@ -30,19 +30,20 @@ def home():
 @main.route('/preorder/<int:code>', methods=['GET', 'POST'])
 def preorder(code):
     top_categories = MenuCategory.query.filter_by(parent_id=None).all()  # Only main categories
-
     table = Customers.query.filter_by(code=code).first()
 
     def get_subcategories(cat):
         sub_dict = {}
-        # If category has subcategories
         if cat.subcategories:
             for subcat in cat.subcategories:
-                sub_dict[subcat.name] = get_subcategories(subcat) or [item.name for item in subcat.menu_items]
+                # Recursively build subcategories
+                sub_dict[subcat.name] = get_subcategories(subcat) or [
+                    {"name": item.name, "description": item.description} for item in subcat.menu_items
+                ]
             return sub_dict
         else:
-            # No subcategories, just return list of items
-            return [item.name for item in cat.menu_items]
+            # No subcategories, return list of dicts with name & description
+            return [{"name": item.name, "description": item.description} for item in cat.menu_items]
 
     menu_items = {}
     for category in top_categories:

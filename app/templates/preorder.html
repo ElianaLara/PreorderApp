@@ -36,7 +36,10 @@
                       <div class="items">
                         {% if nested_items %}
                           {% for item in nested_items %}
-                          <div class="item"><h3>{{ item }}</h3><button>Add</button></div>
+                          <div class="item"><h3>{{ item.name }}</h3>
+                            <p>{{ item.description }}</p>
+                            <button>Add</button>
+                          </div>
                           {% endfor %}
                         {% else %}
                           <p>Coming soon</p>
@@ -53,7 +56,10 @@
                   <div class="items">
                     {% if items %}
                       {% for item in items %}
-                      <div class="item"><h3>{{ item }}</h3><button>Add</button></div>
+                      <div class="item"><h3>{{ item.name }}</h3>
+                        <p>{{ item.description }}</p>
+                        <button>Add</button>
+                      </div>
                       {% endfor %}
                     {% else %}
                       <p>Coming soon</p>
