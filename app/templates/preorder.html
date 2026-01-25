@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Place Your Order</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/preorder.css') }}">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="top-bar">
+    <div class="top-content">
+      <a href="#" class="back">← Back</a>
+      <h1>Place Your Order</h1>
+      <p class="sub">
+        John Doe Birthday Party · 8 people · 0 / 8 ordered
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="layout">
+
+    <!-- Menu Column -->
+    <section class="menu">
+      <h2>Menu</h2>
+
+      <!-- Starter -->
+      <div class="category open">
+        <div class="category-header">Starter</div>
+        <div class="items">
+          <div class="item">
+            <h3>Veg Platter</h3>
+            <button>Add to Order</button>
+          </div>
+          <div class="item">
+            <h3>Non Veg Platter</h3>
+            <button>Add to Order</button>
+          </div>
+          <div class="item">
+            <h3>Vegan Platter</h3>
+            <button>Add to Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main /THIS IS TO CHECK HOW WOULD IT LOOK, LATER CHANGE WITH BACKEND -->
+      <div class="category open">
+        <div class="category-header">Main</div>
+        <div class="items">
+          <div class="item"><h3>Railway Station Lamb Curry</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Delhi Kadhai Gosht</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Butter Chicken 1950s</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Roadside Chicken Bhuna</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Kozhi Chicken Curry</h3><button>Add to Order</button></div>
+          <div class="item"><h3>South Indian Fish Curry</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Dilli Paneer Butter Masala</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Grandma's Aloo Matar</h3><button>Add to Order</button></div>
+          <div class="item"><h3>Paneer Tawa Bhuna</h3><button>Add to Order</button></div>
+        </div>
+      </div>
+
+      <!-- Dessert -->
+      <div class="category">
+        <div class="category-header">Dessert</div>
+      </div>
+
+      <!-- Drink -->
+      <div class="category">
+        <div class="category-header">Drink</div>
+      </div>
+
+    </section>
+
+    <!-- Order Column -->
+    <aside class="order">
+      <label>Your Name</label>
+      <input type="text" placeholder="Enter your name">
+
+      <h3>Your Items</h3>
+      <p class="empty">No items added yet</p>
+
+      <button class="submit">Add Pre-Order</button>
+    </aside>
+
+  </main>
+
+</body>
+</html>
