@@ -4,7 +4,7 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("preorder.html")
 
 @main.route("/preorder", methods=["GET", "POST"])
 def preorder():
