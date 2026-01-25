@@ -8,9 +8,9 @@
 <body>
 
 <header class="top-bar">
-  <a href="#" class="back">← Back</a>
-  <h1>Place Your Order</h1>
-  <p>John Doe Birthday Party · 8 people · 0 / 8 ordered</p>
+  <a href="{{ url_for('main.home') }}" class="back">← Back</a>
+  <h1>Place Your Order for {{ table.restaurant.name}}</h1>
+  <p> {{ table.customer_name }} · {{ table.num_people }} · {{ table.preorders|length }} / {{ table.num_people }} ordered</p>
 </header>
 
 <main class="layout">
@@ -19,26 +19,49 @@
   <section class="menu">
     <h2>Menu</h2>
 
-    {% for category, items in menu_items.items() %}
-      <div class="category">
-        <div class="category-header">
-          <span>{{ category }}</span>
+    {% macro render_menu(level) %}
+      <div class="{{ level.class }}">
+        <div class="{{ level.header_class }}">
+          <span>{{ level.name }}</span>
           <span class="toggle">+</span>
         </div>
 
-        <div class="items">
-          {% for item in items %}
-            <div class="item">
-              <h3>{{ item }}</h3>
-              <button>Add to Order</button>
-            </div>
-          {% endfor %}
+        <div class="{{ level.items_class }}">
+          {% if level.items is mapping %}
+            {% for subname, subitems in level.items.items() %}
+              {{ render_menu({
+                'name': subname,
+                'items': subitems,
+                'class': 'subcategory',
+                'header_class': 'subcategory-header',
+                'items_class': 'items'
+              }) }}
+            {% endfor %}
+          {% elif level.items is iterable %}
+            {% for item in level.items %}
+              <div class="item">
+                <h4>{{ item }}</h4>
+                <button>Add to Order</button>
+              </div>
+            {% endfor %}
+          {% endif %}
         </div>
       </div>
+    {% endmacro %}
+
+    {% for category, subcategories in menu_items.items() %}
+      {{ render_menu({
+        'name': category,
+        'items': subcategories,
+        'class': 'category',
+        'header_class': 'category-header',
+        'items_class': 'items'
+      }) }}
     {% endfor %}
+
   </section>
 
-  <!-- ORDER -->
+  <!-- ORDER PANEL -->
   <aside class="order">
     <label>Your Name</label>
     <input type="text" placeholder="Enter your name">
@@ -54,6 +77,14 @@
 
 </main>
 
-<script src="{{ url_for('static', filename='js/preorder.js') }}"></script>
+<script>
+  // Toggle categories and subcategories
+  document.querySelectorAll('.category-header, .subcategory-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+
 </body>
 </html>

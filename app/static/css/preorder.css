@@ -128,3 +128,22 @@ body {
   border-radius: 10px;
   font-size: 1rem;
 }
+
+.subcategory {
+  margin-left: 1rem;
+  border-left: 2px solid #e5e7eb;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.subcategory-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #2f7cf6;
+  font-weight: 500;
+}
+
+.subcategory.open .items {
+  display: block;
+}
