@@ -30,7 +30,7 @@ def create_app():
 # Seed example data
 # ----------------------------
 def seed_data():
-    from .models import Restaurant, MenuCategory, Customers, PreOrder, OrderItem, MenuItem, MenuTag, MenuItemSize
+    from .models import Restaurant, MenuCategory, Customers, PreOrder, OrderItem, MenuItem, MenuTag, MenuItemSize, SpiceLevel
     # --- Restaurants ---
     resto = Restaurant(name="My Delhi Newcastle", email="admin@resto.com", password="1234")
 
@@ -76,6 +76,14 @@ def seed_data():
     vegetarian_tag = MenuTag(name="Vegetarian")
 
     db.session.add_all([gf_tag, vegan_tag, vegetarian_tag])
+    db.session.commit()
+
+    # --- Menu Spice ---
+    low = SpiceLevel(level=0, label="Low")
+    medium = SpiceLevel(level=1, label="Medium")
+    high = SpiceLevel(level=2, label="High")
+
+    db.session.add_all([low, high, medium])
     db.session.commit()
 
     # --- Menu Items ---
@@ -156,7 +164,8 @@ def seed_data():
     tawa = MenuItem(name="Railway Station Lamb Curry", category=curry, description="Sautéed paneer in a delightful spicy bhuna sauce, a favourite found in Delhi's roadside eateries.")
     tawa.tags.append(vegetarian_tag)
 
-    kozhi = MenuItem(name="Railway Station Lamb Curry", category=curry, description="Hailing from a seaport on the East coast of India, this spicy coconut-flavoured chicken curry is rich in tantalising spices.")
+    kozhi = MenuItem(name="Railway Station Lamb Curry", category=curry, spice_level=high, description="Hailing from a seaport on the East coast of India, this spicy coconut-flavoured chicken curry is rich in tantalising spices.")
+
 
     db.session.add_all([veg_platter, non_platter, vegan_platter, railway, gosht, butter, bhuna, fish, panner, grandma, tawa, kozhi])
     db.session.commit()

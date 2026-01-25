@@ -89,6 +89,9 @@ class MenuItem(db.Model):
         secondary=menu_item_tags,
         backref=db.backref("menu_items", lazy="dynamic")
     )
+    spice_level_id = db.Column(db.Integer, db.ForeignKey('spice_levels.id'))
+    spice_level = db.relationship("SpiceLevel", backref="menu_items")
+
 
 
 class MenuTag(db.Model):
@@ -105,3 +108,10 @@ class MenuItemSize(db.Model):
     __table_args__ = (db.UniqueConstraint("menu_item_id", "size", name="uq_menuitem_size"),)
 
     menu_item = db.relationship("MenuItem", backref="sizes")
+
+class SpiceLevel(db.Model):
+    __tablename__ = 'spice_levels'
+
+    id = db.Column(db.Integer, primary_key=True)
+    level = db.Column(db.Integer, nullable=False)  # 0–3
+    label = db.Column(db.String(50))  # Mild, Medium, Hot

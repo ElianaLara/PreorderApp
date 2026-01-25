@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import render_template, redirect, url_for, session, Blueprint, flash
+from .forms import CodeForm
+from .models import Customers
 
 main = Blueprint("main", __name__)
 
@@ -26,4 +28,29 @@ menu_items = {
 
 @main.route("/")
 def home():
-    return render_template("preorder.html", menu_items=menu_items)
+    return render_template("home.html")
+
+
+@main.route('/code', methods=['GET', 'POST'])
+def code():
+    form = CodeForm()
+    if form.validate_on_submit():
+        user_code = form.code.data
+
+        # Check if the code exists in the database
+        table = Customers.query.filter_by(code=user_code).first()
+        if table:
+            flash(f'Code {user_code} is valid! Redirecting to preorder...')
+            restaurant = session.get('restaurant_name')
+
+            if not restaurant:
+                return redirect(url_for('main.preorder', code=user_code))
+            else:
+                return redirect(url_for('main.manage_preorder', code=user_code))
+
+        else:
+            # Code is invalid
+            flash(f'Code {user_code} is not valid. Please try again.')
+            return redirect(url_for('main.code'))
+
+    return render_template('code.html', form=form)
