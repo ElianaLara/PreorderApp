@@ -26,7 +26,6 @@ class Customers(db.Model):
 
     customer_name = db.Column(db.String(100), nullable=False)
     code = db.Column(db.Integer, nullable=False)
-    phone = db.Column(db.String(20))
     email = db.Column(db.String(120))
     num_people = db.Column(db.Integer, nullable=False)
     time = db.Column(db.String(5), nullable=False)
@@ -66,7 +65,7 @@ class MenuCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable=False)
     name = db.Column(db.String(50), nullable=False)
-
+    description = db.Column(db.Text, nullable= True)
     #Self-referencing for subcategories
     parent_id = db.Column(db.Integer, db.ForeignKey('menu_categories.id'), nullable=True)
     subcategories = db.relationship(
@@ -74,6 +73,7 @@ class MenuCategory(db.Model):
         backref=db.backref('parent', remote_side=[id]),
         lazy=True
     )
+
 
     menu_items = db.relationship('MenuItem', backref='category', lazy=True)
 
@@ -96,6 +96,5 @@ class MenuItemSize(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'), nullable=False)
     size = db.Column(db.String(50), nullable=False)  # Small, Medium, Large or for wines
-    price = db.Column(db.Float, nullable=False)
 
     menu_item = db.relationship('MenuItem', backref='sizes')
