@@ -168,3 +168,12 @@ body {
 .subcategory.open .items {
   display: block;
 }
+
+#your-items-list li .remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #d80000;
+  font-size: 16px;
+  padding-left: 2rem;
+}

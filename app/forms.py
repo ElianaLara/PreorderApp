@@ -8,3 +8,8 @@ class CodeForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class PreorderForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    notes = TextAreaField('Notes', validators=[DataRequired()])
+
+

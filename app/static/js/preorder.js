@@ -43,8 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Add the item
       const li = document.createElement("li");
+
       li.textContent = size ? `${name} - ${size}` : name;
       li.dataset.subcat = subcat; // track subcategory
+      itemList.appendChild(li);
+
+      // Create trash button
+      const trash = document.createElement("button");
+      trash.textContent = "Remove"; // Trash emoji for now
+      trash.classList.add("remove-btn");
+      trash.addEventListener("click", () => li.remove()); // Remove item when clicked
+      li.appendChild(trash);
       itemList.appendChild(li);
     });
   });
