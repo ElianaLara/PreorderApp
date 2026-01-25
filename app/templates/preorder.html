@@ -53,6 +53,9 @@
                 <!-- Regular subcategories -->
                 <div class="subcategory">
                   <div class="subcategory-header">{{ subcat_name }} <span class="toggle">+</span></div>
+                  {% if subcat_data.description %}
+                    <p>{{ subcat_data.description }}</p>
+                  {% endif %}
                   <div class="items">
                     {% if items %}
                       {% for item in items %}

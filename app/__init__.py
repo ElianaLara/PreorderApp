@@ -154,18 +154,18 @@ def seed_data():
     gosht = MenuItem(name="Delhi Kadhai Gosht", category=curry, description="From Punjab to Delhi, this slow-cooked lamb curry offers a delightful contrast of Punjabi spices alongside flavoursome onions and peppers cooked Delhi-style.")
     butter = MenuItem(name="Butter Chicken 1950´s", category=curry, description="Tandoori roasted chicken tikka smothered in a rich, creamy tomato sauce, embracing the authentic Delhi origins of this humble dish.")
     bhuna = MenuItem(name="Roadside Chicken Bhuna", category=curry, description="A road-style Punjabi chicken Bhuna inspired by the vibrant highways of North India.")
-    fish = MenuItem(name="Kozhi Chicken Curry", category=curry, description="Malabar food is hugely popular in Delhi, and none more so than this. Delicately spiced fish cooked gently in a creamy coconut sauce.")
+    fish = MenuItem(name="Fish Curry", category=curry, description="Malabar food is hugely popular in Delhi, and none more so than this. Delicately spiced fish cooked gently in a creamy coconut sauce.")
 
-    panner = MenuItem(name="Railway Station Lamb Curry", category=curry, description="Soft Paneer cooked in a classic butter masala sauce, a popular Delhi-style curry.")
+    panner = MenuItem(name="Deli Panner Butter Masala", category=curry, description="Soft Paneer cooked in a classic butter masala sauce, a popular Delhi-style curry.")
     panner.tags.append(vegetarian_tag)
 
-    grandma = MenuItem(name="Railway Station Lamb Curry", category=curry, description="A family heirloom passed down from my dear Grandma, a traditional North Indian potato and pea curry.")
+    grandma = MenuItem(name="Grandma´s Aloo Mataar", category=curry, description="A family heirloom passed down from my dear Grandma, a traditional North Indian potato and pea curry.")
     grandma.tags.append(vegan_tag)
 
-    tawa = MenuItem(name="Railway Station Lamb Curry", category=curry, description="Sautéed paneer in a delightful spicy bhuna sauce, a favourite found in Delhi's roadside eateries.")
+    tawa = MenuItem(name="Panner Tawa Bhuna", category=curry, description="Sautéed paneer in a delightful spicy bhuna sauce, a favourite found in Delhi's roadside eateries.")
     tawa.tags.append(vegetarian_tag)
 
-    kozhi = MenuItem(name="Railway Station Lamb Curry", category=curry, spice_level=high, description="Hailing from a seaport on the East coast of India, this spicy coconut-flavoured chicken curry is rich in tantalising spices.")
+    kozhi = MenuItem(name="Kozhi Chicken Curry", category=curry, spice_level=high, description="Hailing from a seaport on the East coast of India, this spicy coconut-flavoured chicken curry is rich in tantalising spices.")
 
 
     db.session.add_all([veg_platter, non_platter, vegan_platter, railway, gosht, butter, bhuna, fish, panner, grandma, tawa, kozhi])

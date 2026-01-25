@@ -33,17 +33,36 @@ def preorder(code):
     table = Customers.query.filter_by(code=code).first()
 
     def get_subcategories(cat):
-        sub_dict = {}
-        if cat.subcategories:
-            for subcat in cat.subcategories:
-                # Recursively build subcategories
-                sub_dict[subcat.name] = get_subcategories(subcat) or [
-                    {"name": item.name, "description": item.description} for item in subcat.menu_items
-                ]
-            return sub_dict
-        else:
-            # No subcategories, return list of dicts with name & description
-            return [{"name": item.name, "description": item.description} for item in cat.menu_items]
+        # Base structure for category
+        cat_dict = {
+            "description": cat.description,
+            "spice_level": getattr(cat, "spice_level", None),
+            "subcategories": {},
+            "items": []
+        }
+
+        # Add menu items
+        for item in cat.menu_items:
+            item_dict = {
+                "name": item.name,
+                "description": item.description,
+                "tags": [tag.name for tag in item.tags],
+                "spice_level": item.spice_level.label if item.spice_level else None,
+                "sizes": [size.size for size in item.sizes]
+            }
+            cat_dict["items"].append(item_dict)
+
+        # Recursively add subcategories
+        for subcat in cat.subcategories:
+            cat_dict["subcategories"][subcat.name] = get_subcategories(subcat)
+
+        # Remove empty subcategories/items for clean dict
+        if not cat_dict["subcategories"]:
+            cat_dict.pop("subcategories")
+        if not cat_dict["items"]:
+            cat_dict.pop("items")
+
+        return cat_dict
 
     menu_items = {}
     for category in top_categories:
@@ -51,3 +70,4 @@ def preorder(code):
 
     print(menu_items)  # Debug
     return render_template("preorder.html", menu_items=menu_items, table=table)
+
