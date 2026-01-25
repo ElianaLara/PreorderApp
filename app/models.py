@@ -1,15 +1,22 @@
 from . import db
 
+#  Association table for menuItem  and menuTag
+menu_item_tags = db.Table(
+    'menu_item_tags',
+    db.Column('menu_item_id', db.Integer, db.ForeignKey('menu_items.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('menu_tags.id'), primary_key=True)
+)
+
 class Restaurant(db.Model):
     __tablename__ = 'restaurants'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password = db.Column(db.String(50), nullable=False)
 
     customers = db.relationship('Customers', backref='restaurant', lazy=True)
-    categories = db.relationship('MenuCategory', backref='restaurant', lazy=True)
+    menu_categories = db.relationship('MenuCategory', backref='restaurant', lazy=True)
 
 class Customers(db.Model):
     __tablename__ = 'customers'
@@ -21,7 +28,6 @@ class Customers(db.Model):
     code = db.Column(db.Integer, nullable=False)
     phone = db.Column(db.String(20))
     email = db.Column(db.String(120))
-    table_number = db.Column(db.Integer, nullable=False)
     num_people = db.Column(db.Integer, nullable=False)
     time = db.Column(db.String(5), nullable=False)
 
@@ -31,7 +37,7 @@ class Customers(db.Model):
         lazy=True,
         cascade="all, delete-orphan",
         passive_deletes=True
-    )
+    ) #When a costumer is deleted everything is deleted
 
 class PreOrder(db.Model):
     __tablename__ = 'preorders'
@@ -46,27 +52,6 @@ class PreOrder(db.Model):
     notes = db.Column(db.Text)
     items = db.relationship('OrderItem', backref='preorder', lazy=True)
 
-class MenuCategory(db.Model):
-    __tablename__ = 'menu_categories'
-
-    id = db.Column(db.Integer, primary_key=True)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable=False)
-
-    name = db.Column(db.String(50), nullable=True)
-    required = db.Column(db.Boolean, default=False)
-
-class MenuItem(db.Model):
-    __tablename__ = 'menu_items'
-
-    id = db.Column(db.Integer, primary_key=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('menu_categories.id'), nullable=False)
-
-    name = db.Column(db.String(100), nullable=False)
-
-    # Future improvements
-    price = db.Column(db.Float)
-    available = db.Column(db.Boolean, default=True)
-
 class OrderItem(db.Model):
     __tablename__ = 'order_items'
 
@@ -74,4 +59,34 @@ class OrderItem(db.Model):
     preorder_id = db.Column(db.Integer, db.ForeignKey('preorders.id'), nullable=True)
     menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'), nullable=True)
 
-    menu_item = db.relationship('MenuItem')
+
+class MenuCategory(db.Model):
+    __tablename__ = 'menu_categories'
+
+    id = db.Column(db.Integer, primary_key=True)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+
+    #Self-referencing for subcategories
+    parent_id = db.Column(db.Integer, db.ForeignKey('menu_categories.id'), nullable=True)
+    subcategories = db.relationship(
+        'MenuCategory',
+        backref=db.backref('parent', remote_side=[id]),
+        lazy=True
+    )
+
+    menu_items = db.relationship('MenuItem', backref='category', lazy=True)
+
+class MenuItem(db.Model):
+    __tablename__ = 'menu_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('menu_categories.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text) #Description
+
+
+class MenuTag(db.Model):
+    __tablename__ = 'menu_tags'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)  #"GF", "Vegan"
