@@ -36,7 +36,6 @@ def preorder(code):
         # Base structure for category
         cat_dict = {
             "description": cat.description,
-            "spice_level": getattr(cat, "spice_level", None),
             "subcategories": {},
             "items": []
         }
@@ -46,9 +45,9 @@ def preorder(code):
             item_dict = {
                 "name": item.name,
                 "description": item.description,
-                "tags": [tag.name for tag in item.tags],
-                "spice_level": item.spice_level.label if item.spice_level else None,
-                "sizes": [size.size for size in item.sizes]
+                "tags": [tag.name for tag in item.tags],  # iterable list
+                "spice_level": item.spice_level.label if item.spice_level else None,  # string or None
+                "sizes": [size.size for size in item.sizes]  # list of strings
             }
             cat_dict["items"].append(item_dict)
 
@@ -69,5 +68,6 @@ def preorder(code):
         menu_items[category.name] = get_subcategories(category)
 
     print(menu_items)  # Debug
+    print("!!!!!!!!!")
     return render_template("preorder.html", menu_items=menu_items, table=table)
 

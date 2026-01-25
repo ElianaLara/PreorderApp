@@ -15,65 +15,58 @@
 
 <main class="layout">
 
-  <!-- MENU -->
-  <section class="menu">
-     <h2>Menu</h2>
-        {% for category_name, subcategories in menu_items.items() %}
-          <div class="category">
-            <div class="category-header">
-              {{ category_name }} <span class="toggle">+</span>
-            </div>
-            <div class="items">
-              {% for subcat_name, items in subcategories.items() %}
-                {% if items is mapping %}
-                <!-- Nested subcategories (like Wines) -->
-                <div class="subcategory">
-                  <div class="subcategory-header">{{ subcat_name }} <span class="toggle">+</span></div>
-                  <div class="items">
-                    {% for nested_subcat_name, nested_items in items.items() %}
-                    <div class="subcategory">
-                      <div class="subcategory-header">{{ nested_subcat_name }} <span class="toggle">+</span></div>
-                      <div class="items">
-                        {% if nested_items %}
-                          {% for item in nested_items %}
-                          <div class="item"><h3>{{ item.name }}</h3>
-                            <p>{{ item.description }}</p>
-                            <button>Add</button>
-                          </div>
-                          {% endfor %}
-                        {% else %}
-                          <p>Coming soon</p>
-                        {% endif %}
-                      </div>
-                    </div>
-                    {% endfor %}
-                  </div>
-                </div>
-                {% else %}
-                <!-- Regular subcategories -->
-                <div class="subcategory">
-                  <div class="subcategory-header">{{ subcat_name }} <span class="toggle">+</span></div>
-                  {% if subcat_data.description %}
-                    <p>{{ subcat_data.description }}</p>
-                  {% endif %}
-                  <div class="items">
-                    {% if items %}
-                      {% for item in items %}
-                      <div class="item"><h3>{{ item.name }}</h3>
-                        <p>{{ item.description }}</p>
-                        <button>Add</button>
-                      </div>
-                      {% endfor %}
-                    {% else %}
-                      <p>Coming soon</p>
-                    {% endif %}
-                  </div>
-                </div>
-                {% endif %}
-              {% endfor %}
-            </div>
-          </div>
+<!-- MENU -->
+<section class="menu">
+  <h2>Menu</h2>
+
+  {% macro render_category(cat_name, cat_data) %}
+    <div class="category">
+      <div class="category-header">
+        {{ cat_name }}
+        {% if cat_data.get("spice_level") %} - {{ cat_data["spice_level"] }}{% endif %}
+        <span class="toggle">+</span>
+      </div>
+
+      {% if cat_data.get("description") %}
+        <p>{{ cat_data["description"] }}</p>
+      {% endif %}
+
+      <div class="items">
+        {# Recursive subcategories #}
+        {% if cat_data.get("subcategories") %}
+          {% for sub_name, sub_data in cat_data["subcategories"].items() %}
+            {{ render_category(sub_name, sub_data) }}
           {% endfor %}
+        {% endif %}
+
+        {# Menu items #}
+        {% if cat_data.get("items") %}
+          {% for item in cat_data["items"] %}
+            <div class="item">
+              <h3>{{ item["name"] }}</h3>
+              {% if item.get("description") %}<p>{{ item["description"] }}</p>{% endif %}
+              {% if item.get("spice_level") %}<p>Spice Level: {{ item["spice_level"] }}</p>{% endif %}
+              {% if item.get("tags") %}<p>Tags: {{ item["tags"] | join(', ') }}</p>{% endif %}
+              {% if item.get("sizes") %}
+                <label for="size-{{ item["name"] }}">Size:</label>
+                <select id="size-{{ item["name"] }}">
+                  {% for size in item["sizes"] %}
+                    <option value="{{ size }}">{{ size }}</option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+              <button>Add</button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  {% endmacro %}
+
+  {# Render top-level categories #}
+  {% for cat_name, cat_data in menu_items.items() %}
+    {{ render_category(cat_name, cat_data) }}
+  {% endfor %}
 </section>
 
   <!-- ORDER PANEL -->
