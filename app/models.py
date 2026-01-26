@@ -57,6 +57,11 @@ class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     preorder_id = db.Column(db.Integer, db.ForeignKey('preorders.id'), nullable=True)
     menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_items.id'), nullable=True)
+    menu_item_size_id = db.Column(db.Integer, db.ForeignKey('menu_item_sizes.id'), nullable=True)
+    size = db.relationship('MenuItemSize')
+
+    menu_item = db.relationship('MenuItem', backref='order_items')
+
 
 
 class MenuCategory(db.Model):
@@ -90,7 +95,6 @@ class MenuItem(db.Model):
     )
     spice_level_id = db.Column(db.Integer, db.ForeignKey('spice_levels.id'))
     spice_level = db.relationship("SpiceLevel", backref="menu_items")
-
 
 
 class MenuTag(db.Model):

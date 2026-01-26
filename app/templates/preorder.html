@@ -121,13 +121,15 @@
               {% for item in order.items %}
                 {% if item.menu_item %}
                   <li>
-                    {{ item.menu_item.name }}
-                    {% if item.menu_item.sizes %}
-                      - {{ item.menu_item.sizes[0].size }}
+
+                    {% if item.menu_item.category.parent %}
+                    {{item.menu_item.category.name }}
+                    {% endif %} : {{ item.menu_item.name}}
+
+                    {% if item.size %}
+                      - {{item.size.size}}
                     {% endif %}
-                    {% if item.menu_item.spice_level %}
-                      ({{ item.menu_item.spice_level.label }})
-                    {% endif %}
+
                   </li>
                 {% endif %}
               {% endfor %}

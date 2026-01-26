@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, session, Blueprint, flash, request
 from .forms import CodeForm, PreorderForm
-from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem
+from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem, MenuItemSize
 from . import db
 
 main = Blueprint("main", __name__)
@@ -73,13 +73,6 @@ def preorder(code):
     # print(menu_items)  # Debug
     # print("!!!!!!!!!")
 
-    for preorder in preorders:
-        print(f"PreOrder ID: {preorder.id}, Person: {preorder.person_name}, Notes: {preorder.notes}")
-        for item in preorder.items:
-            # Get the menu item name
-            menu_item_name = item.menu_item.name if item.menu_item else "Unknown"
-            print(f"  Item ID: {item.id}, Menu Item: {menu_item_name}")
-
     #------
     # This is the forms logic
     form = PreorderForm()
@@ -104,18 +97,31 @@ def preorder(code):
 
         # Add items
         for item_text in items:
-            # item_text is something like "Curry - Large"
-            item_name = item_text.split(" - ")[0]  # Extract the name
+            # Example: "Wine - Bottle" or "Curry - Large"
+            parts = item_text.split(" - ")
+            item_name = parts[0].strip()  # "Wine" or "Curry"
+            size_name = parts[1].strip() if len(parts) > 1 else None  # "Bottle" or "Large"
+
+            # Find the MenuItem
             menu_item = MenuItem.query.filter_by(name=item_name).first()
+            size_obj = None
+
+            if menu_item and size_name:
+                # Match size exactly from MenuItemSize
+                size_obj = MenuItemSize.query.filter_by(
+                    menu_item_id=menu_item.id,
+                    size=size_name
+                ).first()
+
             if menu_item:
                 order_item = OrderItem(
                     preorder_id=preorder.id,
-                    menu_item_id=menu_item.id
+                    menu_item_id=menu_item.id,
+                    menu_item_size_id=size_obj.id if size_obj else None
                 )
                 db.session.add(order_item)
 
-        db.session.commit()  # Commit all OrderItems
-
+        db.session.commit()
         flash("Pre-order added successfully!")
         return redirect(url_for("main.preorder", code=code))
 

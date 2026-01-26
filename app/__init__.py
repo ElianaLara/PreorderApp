@@ -195,7 +195,8 @@ def seed_data():
     # Add items to preorder
     order_item1 = OrderItem(preorder_id=preorder1.id, menu_item_id=goan_zombie.id)
     order_item2 = OrderItem(preorder_id=preorder1.id, menu_item_id=gosht.id)
-    db.session.add_all([order_item1, order_item2])
+    order_item3 = OrderItem(preorder_id=preorder1.id, menu_item_id=non_platter.id)
+    db.session.add_all([order_item1, order_item2, order_item3])
     db.session.commit()
 
     print("Database seeded successfully!")
