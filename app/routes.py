@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, session, Blueprint, flash,
 from .forms import CodeForm, PreorderForm
 from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem, MenuItemSize
 from . import db
+from .email import send_email
 
 main = Blueprint("main", __name__)
 
@@ -34,8 +35,63 @@ def preorder(code):
     top_categories = MenuCategory.query.filter_by(parent_id=None).all()  # Only main categories
     table = Customers.query.filter_by(code=code).first()
     preorders = table.preorders
+    preorder_completed = False
 
+    # If table doesn’t exist, redirect
+    if not table:
+        flash("Table not found")
+        return redirect(url_for("main.home"))
 
+    #  preorder_completed true and send email
+    if len(table.preorders) >= table.num_people:
+        preorder_completed = True
+
+        # Build preorder text for email
+        preorder_lines = []
+        preorder_lines.append("Thank you for completing your pre-order please see the order below: \n")
+
+        for order in table.preorders:  # Loop over all preorders for this table
+            lines = []  # Lines for this person
+            lines.append(f"{order.person_name}:")  # Person's name on its own line
+
+            for item in order.items:
+                if item.menu_item:
+                    parts = []
+
+                    # Parent category if exists
+                    if item.menu_item.category.parent:
+                        parts.append(f"{item.menu_item.category.parent.name}:")
+
+                    # Current category
+                    parts.append(f"{item.menu_item.category.name}:")
+
+                    # Item name
+                    parts.append(item.menu_item.name)
+
+                    # Size if exists
+                    if item.size:
+                        parts.append(f"- {item.size.size}")
+
+                    # Join parts for this item and add to person's lines
+                    lines.append(" ".join(parts))
+
+            # Add notes if they exist
+            if order.notes:
+                lines.append(f"Notes: {order.notes}")
+
+            # Add an empty line between people
+            preorder_lines.append("\n".join(lines))
+            preorder_lines.append("")  # Blank line for spacing
+
+        # Join everything for email body
+        email_body = "\n".join(preorder_lines)
+
+        # Send email
+        send_email(
+            subject=f"🎉 Preorder Completed for {table.customer_name, }!!",
+            recipients=[table.email],
+            body=email_body
+        )
 
     def get_subcategories(cat):
         # Base structure for category
@@ -140,8 +196,15 @@ def preorder(code):
         flash("Pre-order added successfully!")
         return redirect(url_for("main.preorder", code=code))
 
+    return render_template(
+        "preorder.html",
+        menu_items=menu_items,
+        table=table,
+        form=form,
+        preorders=preorders,
+        preorder_completed=preorder_completed
+    )
 
-    return render_template("preorder.html", menu_items=menu_items, table=table, form=form, preorders=preorders)
 
 @main.route("/preorder/<int:preorder_id>/delete", methods=["POST"])
 def delete_preorder(preorder_id):

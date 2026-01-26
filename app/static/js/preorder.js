@@ -1,5 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* +/- ORDER COMPLETED LOGIC */
+  const dataEl = document.getElementById("preorder-data");
+  const preorderCompleted = dataEl
+    ? JSON.parse(dataEl.dataset.completed)
+    : false;
+
+  if (preorderCompleted) {
+    const popup = document.getElementById("preorder-popup");
+    popup.classList.remove("hidden");
+
+    document.getElementById("close-popup")
+      .addEventListener("click", () => popup.classList.add("hidden"));
+  }
+
   /* +/- TOGGLE LOGIC */
   document.querySelectorAll(".category-header, .subcategory-header").forEach(header => {
     header.addEventListener("click", () => {
@@ -24,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const select = button.closest(".item").querySelector("select");
       if (select) size = select.value;
 
-      // Only one item per subcategory
       const exists = [...itemList.children].some(
         li => li.dataset.subcat === subcat
       );
@@ -33,16 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Create list item
       const li = document.createElement("li");
       li.dataset.subcat = subcat;
 
-      // Item text
       const text = document.createElement("span");
       text.classList.add("item-text");
       text.textContent = size ? `${name} - ${size}` : name;
 
-      // Remove button
       const removeBtn = document.createElement("button");
       removeBtn.textContent = "Remove";
       removeBtn.classList.add("remove-btn");
@@ -54,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* FORM SUBMIT: ADD HIDDEN INPUTS */
   document.getElementById("preorder-form").addEventListener("submit", function () {
     document.querySelectorAll("input[name='items[]']").forEach(i => i.remove());
 
@@ -68,5 +77,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
-
 

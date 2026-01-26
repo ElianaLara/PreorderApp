@@ -170,7 +170,17 @@
       <p>No orders yet.</p>
     {% endif %}
 
+    <div id="preorder-popup" class="popup hidden">
+      <div class="popup-content">
+        <h2>🎉 Preorder Completed!</h2>
+        <p>Everyone has placed their order.</p>
+        <button id="close-popup" type="button">Nice</button>
+      </div>
+    </div>
 
+    <div id="preorder-data"
+     data-completed="{{ preorder_completed | tojson }}">
+    </div>
 
 </main>
 

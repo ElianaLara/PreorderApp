@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
+from flask_mail import Mail, Message
 
 db = SQLAlchemy()
-
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -17,6 +18,18 @@ def create_app():
     app.register_blueprint(main)
     from . import models
     db.init_app(app)
+
+    # Configure email
+    app.config.update(
+        MAIL_SERVER='smtp.gmail.com',
+        MAIL_PORT=587,
+        MAIL_USE_TLS=True,
+        MAIL_USERNAME='laraelianaespino14@gmail.com',
+        MAIL_PASSWORD='tzal nrrj jmgd inho',  # For Gmail, use App Password
+        MAIL_DEFAULT_SENDER=('Preorder App', 'laraelianaespino14@gmail.com')
+    )
+
+    mail.init_app(app)
 
     # Create tables
     with app.app_context():
@@ -178,8 +191,9 @@ def seed_data():
         customer_name="Alice Johnson",
         code=101,
         email="alice@email.com",
-        num_people=9,
-        time="19:00"
+        num_people=2,
+        time="19:00",
+        status = "completed"
     )
     db.session.add(customer1)
     db.session.commit()

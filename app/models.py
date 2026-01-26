@@ -29,6 +29,7 @@ class Customers(db.Model):
     email = db.Column(db.String(120))
     num_people = db.Column(db.Integer, nullable=False)
     time = db.Column(db.String(5), nullable=False)
+    status = db.Column(db.String, nullable=False)
 
     preorders = db.relationship(
         'PreOrder',
