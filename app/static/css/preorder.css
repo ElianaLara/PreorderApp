@@ -205,3 +205,21 @@ body {
     color: #166cc3;
     font-weight: bold; /* optional */
 }
+
+.btn {
+  margin-left: 8px;
+  font-size: 0.8rem;
+}
+
+.btn-edit {
+  color: #2f7cf6;
+}
+
+
+.btn-delete{
+  color: white;
+  background: #d80000;
+  border: black;
+  cursor: pointer;
+  border-radius: 12px;
+}

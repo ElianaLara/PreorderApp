@@ -35,6 +35,8 @@ def preorder(code):
     table = Customers.query.filter_by(code=code).first()
     preorders = table.preorders
 
+
+
     def get_subcategories(cat):
         # Base structure for category
         cat_dict = {
@@ -78,12 +80,25 @@ def preorder(code):
     form = PreorderForm()
 
     if form.validate_on_submit():
-        name = form.name.data
+        name = form.name.data.strip() if form.name.data else None
+
+        existing_preorder = PreOrder.query.filter_by(
+            customer_id=table.id,
+            person_name=name
+        ).first()
+
+        if existing_preorder:
+            flash(f"An order for '{name}' already exists.")
+            return redirect(url_for("main.preorder", code=code))
+
+        if not name:
+            flash("Please enter your name")
+            return redirect(url_for("main.preorder", code=code))
         notes = form.notes.data.strip() if form.notes.data else None
         items = request.form.getlist("items[]")
 
         if not items:
-            flash("Please add at least one item and your name")
+            flash("Please add at least one item")
             return redirect(url_for("main.preorder", code=code))
 
         # ---- Save to DB ----
@@ -127,4 +142,12 @@ def preorder(code):
 
 
     return render_template("preorder.html", menu_items=menu_items, table=table, form=form, preorders=preorders)
+
+@main.route("/preorder/<int:preorder_id>/delete", methods=["POST"])
+def delete_preorder(preorder_id):
+    preorder = PreOrder.query.get_or_404(preorder_id)
+    db.session.delete(preorder)
+    db.session.commit()
+    flash("Order deleted")
+    return redirect(request.referrer)
 

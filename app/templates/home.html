@@ -23,6 +23,14 @@
       {% endif %}
     {% endwith %}
 
+    {% if form.code.errors %}
+          {% for error in form.code.errors %}
+            <div class="flash-message error">
+              {{ error }}
+            </div>
+          {% endfor %}
+    {% endif %}
+
     <form method="POST" novalidate>
       {{ form.hidden_tag() }}
 
