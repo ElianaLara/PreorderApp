@@ -10,6 +10,9 @@ class CodeForm(FlaskForm):
 
 class PreorderForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    notes = TextAreaField('Notes', validators=[DataRequired()])
+    notes = StringField('Name', validators=[Optional()])
+
+    submit = SubmitField("Update Preorder")
+
 
 

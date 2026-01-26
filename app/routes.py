@@ -1,5 +1,5 @@
-from flask import render_template, redirect, url_for, session, Blueprint, flash
-from .forms import CodeForm
+from flask import render_template, redirect, url_for, session, Blueprint, flash, request
+from .forms import CodeForm, PreorderForm
 from .models import Customers, MenuItem, MenuCategory, PreOrder
 
 main = Blueprint("main", __name__)
@@ -67,7 +67,23 @@ def preorder(code):
     for category in top_categories:
         menu_items[category.name] = get_subcategories(category)
 
-    print(menu_items)  # Debug
-    print("!!!!!!!!!")
-    return render_template("preorder.html", menu_items=menu_items, table=table)
+    form = PreorderForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        description = form.notes.data
+        if description:
+            description = description.strip()
+        else:
+            description = None
+
+        items = request.form.getlist("items[]")
+        print(name, description, items)
+
+
+
+
+
+    #print(menu_items)  # Debug
+    #print("!!!!!!!!!")
+    return render_template("preorder.html", menu_items=menu_items, table=table, form=form)
 

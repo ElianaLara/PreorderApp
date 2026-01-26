@@ -10,7 +10,7 @@
 <header class="top-bar">
   <a href="{{ url_for('main.home') }}" class="back">← Back</a>
   <h1>Place Your Order for {{ table.restaurant.name}}</h1>
-  <p> {{ table.customer_name }} · {{ table.num_people }} · {{ table.preorders|length }} / {{ table.num_people }} ordered</p>
+  <p> {{ table.customer_name }} · {{ table.num_people }} people · {{ table.preorders|length }} / {{ table.num_people }} ordered</p>
 </header>
 
 <main class="layout">
@@ -77,18 +77,24 @@
 
   <!-- ORDER PANEL -->
   <aside class="order">
-    <label>Your Name</label>
-    <input type="text" placeholder="Enter your name">
+    <form method="POST" id="preorder-form">
+    {{ form.hidden_tag() }}
+
+    <label for="name">Your Name</label>
+    {{ form.name(class="form-control", placeholder="Enter your name") }}
 
     <label>Your Items</label>
     <ul id="your-items-list">
     <!-- Items will appear here -->
     </ul>
 
-    <label>Notes:</label>
-    <input type="text" placeholder="Example: Gluten Free">
+    <div class="form-group">
+      <label for="notes">Notes:</label>
+      <br> <!-- ensures textarea appears below label -->
+      {{ form.notes(class="form-control", placeholder="Example: Gluten Free") }}
+    </div>
 
-    <button class="submit">Add Pre-Order</button>
+    {{ form.submit(class="button") }}
   </aside>
 
 </main>

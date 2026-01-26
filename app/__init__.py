@@ -49,8 +49,8 @@ def seed_data():
     cocktails = MenuCategory(name="Cocktails", restaurant_id=resto.id, parent=drinks)
     wines = MenuCategory(name="Wines", restaurant_id=resto.id, parent=drinks)
     mocktails = MenuCategory(name="Mocktails", restaurant_id=resto.id, parent=drinks)
-    brewery = MenuCategory(name="Mocktails", restaurant_id=resto.id, parent=drinks)
-    soft_drinks = MenuCategory(name="Mocktails", restaurant_id=resto.id, parent=drinks)
+    brewery = MenuCategory(name="Brewery", restaurant_id=resto.id, parent=drinks)
+    soft_drinks = MenuCategory(name="Soft Drinks", restaurant_id=resto.id, parent=drinks)
 
     street_plates = MenuCategory(name="Street Plates", restaurant_id=resto.id, parent=food, description="Choose one mixed platter per person")
     curry = MenuCategory(name="Roadside Curries", restaurant_id=resto.id, parent=food, description="Choose one Roadside Curry per person."

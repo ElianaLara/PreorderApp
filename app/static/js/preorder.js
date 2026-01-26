@@ -1,62 +1,72 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // !!! +/- logic
-  // Select all headers: categories and all subcategories
-  const headers = document.querySelectorAll(".category-header, .subcategory-header");
-
-  headers.forEach(header => {
+  /* +/- TOGGLE LOGIC */
+  document.querySelectorAll(".category-header, .subcategory-header").forEach(header => {
     header.addEventListener("click", () => {
-      // Find the closest container (category or subcategory)
       const container = header.closest(".category, .subcategory");
       if (!container) return;
 
-      // Toggle open class
       container.classList.toggle("open");
-
-      // Update the + / − symbol
-      const toggle = header.querySelector(".toggle");
-      toggle.textContent = container.classList.contains("open") ? "−" : "+";
+      header.querySelector(".toggle").textContent =
+        container.classList.contains("open") ? "−" : "+";
     });
   });
 
-
-
-  //Add items logic
- const itemList = document.getElementById("your-items-list");
+  /* ADD ITEMS LOGIC */
+  const itemList = document.getElementById("your-items-list");
 
   document.querySelectorAll(".add-btn").forEach(button => {
     button.addEventListener("click", () => {
       const name = button.dataset.name;
-      let size = button.dataset.size;
       const subcat = button.dataset.subcat;
+      let size = "";
 
-      // Check for size select
       const select = button.closest(".item").querySelector("select");
       if (select) size = select.value;
 
-      // Check if any item from this subcategory already exists
-      const exists = Array.from(itemList.children).some(li => li.dataset.subcat === subcat);
+      // Only one item per subcategory
+      const exists = [...itemList.children].some(
+        li => li.dataset.subcat === subcat
+      );
       if (exists) {
         alert(`You already added an item from "${subcat}"`);
         return;
       }
 
-      // Add the item
+      // Create list item
       const li = document.createElement("li");
+      li.dataset.subcat = subcat;
 
-      li.textContent = size ? `${name} - ${size}` : name;
-      li.dataset.subcat = subcat; // track subcategory
-      itemList.appendChild(li);
+      // Item text (separate span!)
+      const text = document.createElement("span");
+      text.classList.add("item-text");
+      text.textContent = size ? `${name} - ${size}` : name;
 
-      // Create trash button
-      const trash = document.createElement("button");
-      trash.textContent = "Remove"; // Trash emoji for now
-      trash.classList.add("remove-btn");
-      trash.addEventListener("click", () => li.remove()); // Remove item when clicked
-      li.appendChild(trash);
+      // Remove button
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "Remove";
+      removeBtn.classList.add("remove-btn");
+      removeBtn.addEventListener("click", () => li.remove());
+
+      li.appendChild(text);
+      li.appendChild(removeBtn);
       itemList.appendChild(li);
     });
   });
+
+  /* FORM SUBMIT: ADD HIDDEN INPUTS */
+  document.getElementById("preorder-form").addEventListener("submit", function () {
+    document.querySelectorAll("input[name='items[]']").forEach(i => i.remove());
+
+    [...itemList.children].forEach(li => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "items[]";
+      input.value = li.querySelector(".item-text").textContent;
+      this.appendChild(input);
+    });
+  });
+
 });
 
 
