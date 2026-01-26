@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, session, Blueprint, flash, request
 from .forms import CodeForm, PreorderForm
-from .models import Customers, MenuItem, MenuCategory, PreOrder
+from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem
+from . import db
 
 main = Blueprint("main", __name__)
 
@@ -13,7 +14,6 @@ def home():
         # Check if the code exists in the database
         table = Customers.query.filter_by(code=user_code).first()
         if table:
-            flash(f'Code {user_code} is valid! Redirecting to preorder...')
 
             return redirect(url_for('main.preorder', code=user_code))
 
@@ -21,6 +21,7 @@ def home():
             # Code is invalid
             flash(f'Code {user_code} is not valid. Please try again.')
             return redirect(url_for('main.home'))
+
 
     return render_template('home.html', form=form)
 
@@ -78,7 +79,7 @@ def preorder(code):
 
     if form.validate_on_submit():
         name = form.name.data
-        description = form.notes.data.strip() if form.notes.data else None
+        notes = form.notes.data.strip() if form.notes.data else None
         items = request.form.getlist("items[]")
 
         if not items or not name:
@@ -86,7 +87,31 @@ def preorder(code):
             return redirect(url_for("main.preorder", code=code))
 
         flash("Pre-order added successfully!")
-        print(name, description, items)  # Debug
+        print(name, notes, items)  # Debug
+        # ---- Save to DB ----
+        preorder = PreOrder(
+            customer_id=table.id,
+            person_name=name,
+            notes=notes
+        )
+        db.session.add(preorder)
+        db.session.commit()  # Commit first to get preorder.id
+
+        # Add items
+        for item_text in items:
+            # item_text is something like "Curry - Large"
+            item_name = item_text.split(" - ")[0]  # Extract the name
+            menu_item = MenuItem.query.filter_by(name=item_name).first()
+            if menu_item:
+                order_item = OrderItem(
+                    preorder_id=preorder.id,
+                    menu_item_id=menu_item.id
+                )
+                db.session.add(order_item)
+
+        db.session.commit()  # Commit all OrderItems
+
+        flash("Pre-order added successfully!")
         return redirect(url_for("main.preorder", code=code))
 
 

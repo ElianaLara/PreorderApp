@@ -52,8 +52,8 @@ def seed_data():
     brewery = MenuCategory(name="Brewery", restaurant_id=resto.id, parent=drinks)
     soft_drinks = MenuCategory(name="Soft Drinks", restaurant_id=resto.id, parent=drinks)
 
-    street_plates = MenuCategory(name="Street Plates", restaurant_id=resto.id, parent=food, description="Choose one mixed platter per person")
-    curry = MenuCategory(name="Roadside Curries", restaurant_id=resto.id, parent=food, description="Choose one Roadside Curry per person."
+    street_plates = MenuCategory(name="Street Plates",required = True, restaurant_id=resto.id, parent=food, description="Choose one mixed platter per person")
+    curry = MenuCategory(name="Roadside Curries", required=True,restaurant_id=resto.id, parent=food, description="Choose one Roadside Curry per person."
                                                                                                    "Every Roadside Curry is served with Dum Pulao Rice, "
                                                                                                    "plus an assorted naan basket, signature Chacha Chips "
                                                                                                    "and a hearty Punjabi Dal Tadka for the table to share -perfect "

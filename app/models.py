@@ -73,8 +73,7 @@ class MenuCategory(db.Model):
         backref=db.backref('parent', remote_side=[id]),
         lazy=True
     )
-
-
+    required = db.Column(db.Boolean, nullable=True)
     menu_items = db.relationship('MenuItem', backref='category', lazy=True)
 
 class MenuItem(db.Model):
