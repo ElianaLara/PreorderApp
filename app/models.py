@@ -74,6 +74,7 @@ class MenuCategory(db.Model):
         lazy=True
     )
 
+
     menu_items = db.relationship('MenuItem', backref='category', lazy=True)
 
 class MenuItem(db.Model):

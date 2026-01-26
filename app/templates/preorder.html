@@ -11,6 +11,8 @@
   <a href="{{ url_for('main.home') }}" class="back">← Back</a>
   <h1>Place Your Order for {{ table.restaurant.name}}</h1>
   <p> {{ table.customer_name }} · {{ table.num_people }} people · {{ table.preorders|length }} / {{ table.num_people }} ordered</p>
+
+
 </header>
 
 <main class="layout">
@@ -75,9 +77,10 @@
   {% endfor %}
 </section>
 
+
   <!-- ORDER PANEL -->
   <aside class="order">
-    <form method="POST" id="preorder-form">
+    <form method="POST" id="preorder-form" novalidate>
     {{ form.hidden_tag() }}
 
     <label for="name">Your Name</label>
@@ -94,7 +97,20 @@
       {{ form.notes(class="form-control", placeholder="Example: Gluten Free") }}
     </div>
 
+
     {{ form.submit(class="button") }}
+
+      <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-message">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
   </aside>
 
 </main>

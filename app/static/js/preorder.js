@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       li.dataset.subcat = subcat;
 
-      // Item text (separate span!)
+      // Item text
       const text = document.createElement("span");
       text.classList.add("item-text");
       text.textContent = size ? `${name} - ${size}` : name;

@@ -189,3 +189,14 @@ body {
   font-size: 1rem;
   cursor: pointer;
 }
+
+/* Flash message box */
+.flash-message {
+  background-color: #cce0ff;  /* pale blue */
+  color: #1a3d7c;             /* dark blue text */
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}

@@ -4,8 +4,6 @@ from .models import Customers, MenuItem, MenuCategory, PreOrder
 
 main = Blueprint("main", __name__)
 
-
-
 @main.route('/', methods=['GET', 'POST'])
 def home():
     form = CodeForm()
@@ -29,6 +27,9 @@ def home():
 
 @main.route('/preorder/<int:code>', methods=['GET', 'POST'])
 def preorder(code):
+
+    #------
+    #This is the Menu logic
     top_categories = MenuCategory.query.filter_by(parent_id=None).all()  # Only main categories
     table = Customers.query.filter_by(code=code).first()
 
@@ -67,23 +68,33 @@ def preorder(code):
     for category in top_categories:
         menu_items[category.name] = get_subcategories(category)
 
+    # print(menu_items)  # Debug
+    # print("!!!!!!!!!")
+
+
+    #------
+    # This is the forms logic
     form = PreorderForm()
+
     if form.validate_on_submit():
         name = form.name.data
-        description = form.notes.data
-        if description:
-            description = description.strip()
-        else:
-            description = None
-
+        description = form.notes.data.strip() if form.notes.data else None
         items = request.form.getlist("items[]")
-        print(name, description, items)
+
+        if not items or not name:
+            flash("Please add at least one item and your name")
+            return redirect(url_for("main.preorder", code=code))
+
+        flash("Pre-order added successfully!")
+        print(name, description, items)  # Debug
+        return redirect(url_for("main.preorder", code=code))
 
 
 
 
 
-    #print(menu_items)  # Debug
-    #print("!!!!!!!!!")
+
+
+
     return render_template("preorder.html", menu_items=menu_items, table=table, form=form)
 
