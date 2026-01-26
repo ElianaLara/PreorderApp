@@ -33,6 +33,7 @@ def preorder(code):
     #This is the Menu logic
     top_categories = MenuCategory.query.filter_by(parent_id=None).all()  # Only main categories
     table = Customers.query.filter_by(code=code).first()
+    preorders = table.preorders
 
     def get_subcategories(cat):
         # Base structure for category
@@ -72,6 +73,12 @@ def preorder(code):
     # print(menu_items)  # Debug
     # print("!!!!!!!!!")
 
+    for preorder in preorders:
+        print(f"PreOrder ID: {preorder.id}, Person: {preorder.person_name}, Notes: {preorder.notes}")
+        for item in preorder.items:
+            # Get the menu item name
+            menu_item_name = item.menu_item.name if item.menu_item else "Unknown"
+            print(f"  Item ID: {item.id}, Menu Item: {menu_item_name}")
 
     #------
     # This is the forms logic
@@ -82,12 +89,10 @@ def preorder(code):
         notes = form.notes.data.strip() if form.notes.data else None
         items = request.form.getlist("items[]")
 
-        if not items or not name:
+        if not items:
             flash("Please add at least one item and your name")
             return redirect(url_for("main.preorder", code=code))
 
-        flash("Pre-order added successfully!")
-        print(name, notes, items)  # Debug
         # ---- Save to DB ----
         preorder = PreOrder(
             customer_id=table.id,
@@ -115,11 +120,5 @@ def preorder(code):
         return redirect(url_for("main.preorder", code=code))
 
 
-
-
-
-
-
-
-    return render_template("preorder.html", menu_items=menu_items, table=table, form=form)
+    return render_template("preorder.html", menu_items=menu_items, table=table, form=form, preorders=preorders)
 

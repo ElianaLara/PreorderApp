@@ -11,107 +11,141 @@
   <a href="{{ url_for('main.home') }}" class="back">← Back</a>
   <h1>Place Your Order for {{ table.restaurant.name}}</h1>
   <p> {{ table.customer_name }} · {{ table.num_people }} people · {{ table.preorders|length }} / {{ table.num_people }} ordered</p>
-
-
 </header>
 
 <main class="layout">
 
-<!-- MENU -->
-<section class="menu">
-  <h2>Menu</h2>
+  <!-- MENU -->
+  <section class="menu">
+    <h2>Menu</h2>
 
-  {% macro render_category(cat_name, cat_data, current_subcat=None) %}
-    <div class="category">
-      <div class="category-header">
-        {{ cat_name }}
-        {% if cat_data.get("spice_level") %} - {{ cat_data["spice_level"] }}{% endif %}
-        <span class="toggle">+</span>
-      </div>
+    {% macro render_category(cat_name, cat_data, current_subcat=None) %}
+      <div class="category">
+        <div class="category-header">
+          {{ cat_name }}
+          {% if cat_data.get("spice_level") %} - {{ cat_data["spice_level"] }}{% endif %}
+          <span class="toggle">+</span>
+        </div>
 
-      {% if cat_data.get("description") %}
-        <p>{{ cat_data["description"] }}</p>
-      {% endif %}
-
-      <div class="items">
-        {# Recursive subcategories #}
-        {% if cat_data.get("subcategories") %}
-          {% for sub_name, sub_data in cat_data.get("subcategories", {}).items() %}
-            {{ render_category(sub_name, sub_data, current_subcat=sub_name) }}
-          {% endfor %}
+        {% if cat_data.get("description") %}
+          <p>{{ cat_data["description"] }}</p>
         {% endif %}
 
-        {# Menu items #}
-        {% if cat_data.get("items") %}
-          {% for item in cat_data["items"] %}
-            <div class="item">
-              <h3>{{ item["name"] }}</h3>
-              {% if item.get("description") %}<p>{{ item["description"] }}</p>{% endif %}
-              {% if item.get("tags") %}<p class="tags">Tags: {{ item["tags"] | join(', ') }}</p>{% endif %}
-              {% if item.get("spice_level") %}<p class="spice-level">Spice Level: {{ item["spice_level"] }}</p>{% endif %}
+        <div class="items">
+          {# Recursive subcategories #}
+          {% if cat_data.get("subcategories") %}
+            {% for sub_name, sub_data in cat_data.get("subcategories", {}).items() %}
+              {{ render_category(sub_name, sub_data, current_subcat=sub_name) }}
+            {% endfor %}
+          {% endif %}
 
-              {% if item.get("sizes") %}
-                <label for="size-{{ item["name"] }}">Size:</label>
-                <select id="size-{{ item["name"] }}">
-                  {% for size in item["sizes"] %}
-                    <option value="{{ size }}">{{ size }}</option>
-                  {% endfor %}
-                </select>
-              {% endif %}
-              <button class="add-btn"
-                      data-name="{{ item['name'] }}"
-                      data-size="{{ item['sizes'][0] if item.get('sizes') else '' }}"
-                      data-subcat="{{ current_subcat or cat_name }}">
-                Add
-              </button>
-            </div>
-          {% endfor %}
-        {% endif %}
+          {# Menu items #}
+          {% if cat_data.get("items") %}
+            {% for item in cat_data["items"] %}
+              <div class="item">
+                <h3>{{ item["name"] }}</h3>
+                {% if item.get("description") %}<p>{{ item["description"] }}</p>{% endif %}
+                {% if item.get("tags") %}<p class="tags">Tags: {{ item["tags"] | join(', ') }}</p>{% endif %}
+                {% if item.get("spice_level") %}<p class="spice-level">Spice Level: {{ item["spice_level"] }}</p>{% endif %}
+
+                {% if item.get("sizes") %}
+                  <label for="size-{{ item["name"] }}">Size:</label>
+                  <select id="size-{{ item["name"] }}">
+                    {% for size in item["sizes"] %}
+                      <option value="{{ size }}">{{ size }}</option>
+                    {% endfor %}
+                  </select>
+                {% endif %}
+                <button class="add-btn"
+                        data-name="{{ item['name'] }}"
+                        data-size="{{ item['sizes'][0] if item.get('sizes') else '' }}"
+                        data-subcat="{{ current_subcat or cat_name }}">
+                  Add
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
-    </div>
-  {% endmacro %}
+    {% endmacro %}
 
-  {# Render top-level categories #}
-  {% for cat_name, cat_data in menu_items.items() %}
-    {{ render_category(cat_name, cat_data) }}
-  {% endfor %}
-</section>
+    {# Render top-level categories #}
+    {% for cat_name, cat_data in menu_items.items() %}
+      {{ render_category(cat_name, cat_data) }}
+    {% endfor %}
 
+  </section>
 
   <!-- ORDER PANEL -->
   <aside class="order">
     <form method="POST" id="preorder-form" novalidate>
-    {{ form.hidden_tag() }}
+      {{ form.hidden_tag() }}
 
-    <label for="name">Your Name</label>
-    {{ form.name(class="form-control", placeholder="Enter your name") }}
+      <label for="name">Your Name</label>
+      {{ form.name(class="form-control", placeholder="Enter your name") }}
 
-    <label>Your Items</label>
-    <ul id="your-items-list">
-    <!-- Items will appear here -->
-    </ul>
+      <label>Your Items</label>
+      <ul id="your-items-list">
+      <!-- Items will appear here -->
+      </ul>
 
-    <div class="form-group">
-      <label for="notes">Notes:</label>
-      <br> <!-- ensures textarea appears below label -->
-      {{ form.notes(class="form-control", placeholder="Example: Gluten Free") }}
-    </div>
+      <div class="form-group">
+        <label for="notes">Notes:</label>
+        <br>
+        {{ form.notes(class="form-control", placeholder="Example: Gluten Free") }}
+      </div>
 
-
-    {{ form.submit(class="button") }}
+      {{ form.submit(class="button") }}
 
       <!-- Flash messages -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-          <div class="flash-message">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="flash-message">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </form>
 
-  </aside>
+    <h2>Orders Already Placed</h2>
+
+    {% if preorders %}
+      {% for order in preorders %}
+        <div class="notes">
+          <h3 class="order-name">{{ order.person_name }}</h3>
+
+          {% if order.items %}
+            <ul>
+              {% for item in order.items %}
+                {% if item.menu_item %}
+                  <li>
+                    {{ item.menu_item.name }}
+                    {% if item.menu_item.sizes %}
+                      - {{ item.menu_item.sizes[0].size }}
+                    {% endif %}
+                    {% if item.menu_item.spice_level %}
+                      ({{ item.menu_item.spice_level.label }})
+                    {% endif %}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>No items</p>
+          {% endif %}
+
+          {% if order.notes %}
+            <p><strong>Notes:</strong> {{ order.notes }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No orders yet.</p>
+    {% endif %}
+
+
 
 </main>
 
