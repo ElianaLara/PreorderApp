@@ -5,10 +5,12 @@
   <title>{% block title %}Restaurant Dashboard{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/preorder.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body>
   <header class="top-bar">
-  <a href="{{ url_for('main.logout') }}" class="back">← Back</a>
+  <a href="{{ url_for('main.logout') }}" class="back">← Log out</a>
   <h1>Dashboard for {{name}}</h1>
   </header>
 

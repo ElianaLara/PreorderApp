@@ -29,4 +29,69 @@
     </p>
   </div>
 </section>
+
+<!-- Tabs -->
+<div class="tabs">
+  <a href="{{ url_for('main.dashboard', tab='orders') }}"
+     class="tab {% if active_tab=='orders' %}active{% endif %}">All Orders</a>
+  <a href="{{ url_for('main.dashboard', tab='create') }}"
+     class="tab {% if active_tab=='create' %}active{% endif %}">Create Order</a>
+</div>
+
+{% if active_tab == 'orders' %}
+<section class="category">
+  <div class="orders-table">
+    <div class="orders-header">
+      <span>Customer</span>
+      <span>Code</span>
+      <span>Num People</span>
+      <span>Status</span>
+      <span>Time</span>
+      <span>Actions</span>
+    </div>
+
+    {% for order in orders %}
+    <div class="order-row">
+      <span>{{ order.customer_name }}</span>
+      <span>{{ order.code }}</span>
+      <span>{{ order.num_people }}</span>
+      <span>
+        <form method="POST" action="{{ url_for('main.update_order_status', order_id=order.id) }}">
+          <select name="status" class="status-dropdown {{ order.status }}" onchange="this.form.submit()">
+            <option value="new" {% if order.status=='new' %}selected{% endif %}>New</option>
+            <option value="pending" {% if order.status=='pending' %}selected{% endif %}>Pending</option>
+            <option value="completed" {% if order.status=='completed' %}selected{% endif %}>Completed</option>
+            <option value="approved" {% if order.status=='approved' %}selected{% endif %}>Approved</option>
+          </select>
+        </form>
+      </span>
+      <span>{{ order.time }}</span>
+      <span>
+            <!-- Delete form -->
+            <form method="POST" action="{{ url_for('main.delete_order', order_id=order.id) }}">
+              <button type="submit" class="btn-delete">Delete</button>
+            </form>
+
+            <!-- Edit form -->
+            <form method="GET" action="{{ url_for('main.edit_order', order_id=order.id) }}">
+              <button type="submit" class="btn-view">View</button>
+            </form>
+        </form>
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% elif active_tab == 'create' %}
+<section class="category">
+  <form method="POST" action="{{ url_for('main.create_order') }}" class="create-order-form">
+    <input type="text" name="customer_name" placeholder="Customer Name" required class="order-input">
+    <input type="number" name="num_people" placeholder="Number of People" required class="order-input">
+    <input type="text" name="time" placeholder="Time (HH:MM)" required class="order-input">
+    <button type="submit" class="button">Create Order</button>
+  </form>
+</section>
+{% endif %}
 {% endblock %}
+

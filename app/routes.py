@@ -58,9 +58,30 @@ def dashboard():
     name = session.get('restaurant_name')
     restaurant = Restaurant.query.filter_by(name=name).first()
     customers = Customers.query.filter_by(restaurant_id=restaurant.id).all()
+    active_tab = request.args.get('tab', 'orders')
+    preorders = Customers.query.filter_by(restaurant_id=restaurant.id).join(PreOrder).all()
 
-    return render_template('dashboard.html', name=name, orders=customers)
+    return render_template('dashboard.html', name=name, orders=customers, active_tab=active_tab, preorders=preorders)
 
+@main.route('/update_order_status/<int:order_id>', methods=['POST'])
+def update_order_status(order_id):
+    order = Customers.query.get_or_404(order_id)
+    order.status = request.form['status']
+    db.session.commit()
+    return redirect(url_for('main.dashboard', tab='orders'))
+
+@main.route('/delete_order/<int:order_id>', methods=['POST'])
+def delete_order(order_id):
+    order = Customers.query.get_or_404(order_id)
+    db.session.delete(order)
+    db.session.commit()
+    return redirect(url_for('main.dashboard', tab='orders'))
+
+@main.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
+def edit_order(order_id):
+    order = Customers.query.get_or_404(order_id)
+    name = session.get('restaurant_name')
+    return render_template('edit_order.html', order=order, name=name)
 
 @main.route('/logout')
 def logout():
