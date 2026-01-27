@@ -65,7 +65,7 @@
 
 .orders-header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   background: #f0f4f8;
   padding: 0.8rem 1rem;
   font-weight: 600;
@@ -74,7 +74,7 @@
 
 .order-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   background: #fff;
   padding: 0.8rem 1rem;
   border-radius: 12px;
@@ -106,7 +106,7 @@
 }
 
 .btn-delete {
-  background: #d80000;
+  background: #c2410c;
   color: white;
   border: none;
   border-radius: 10px;
@@ -122,7 +122,7 @@
 
 .btn-view {
   margin-top: 1rem;
-  background: #4b9a73;
+  background: rgb(50, 106, 81);
   color: white;
   border: none;
   border-radius: 10px;
@@ -131,8 +131,8 @@
   font-weight: 500;
 }
 
-.btn-delete:hover {
-  background: #218056;
+.btn-view:hover {
+  background: #3e4944;
 }
 
 /* --- PREORDERS LIST --- */

@@ -68,6 +68,15 @@ def update_order_status(order_id):
     order = Customers.query.get_or_404(order_id)
     order.status = request.form['status']
     db.session.commit()
+    if order.status == "Approved":
+        send_email(
+            subject=f"🎉 Preorder Completed for {order.name,}!!",
+            recipients=[order.email],
+            body="Your order has been approved"
+        )
+
+
+
     return redirect(url_for('main.dashboard', tab='orders'))
 
 @main.route('/delete_order/<int:order_id>', methods=['POST'])

@@ -192,6 +192,7 @@ def seed_data():
         code=101,
         email="alice@email.com",
         num_people=2,
+        day="08/02/2025",
         time="19:00",
         status = "new"
     )
@@ -202,6 +203,7 @@ def seed_data():
         code=104,
         email="john@email.com",
         num_people=7,
+        day = "08/02/2025",
         time="19:00",
         status="pending"
     )
@@ -212,6 +214,7 @@ def seed_data():
         code=106,
         email="lala@email.com",
         num_people=10,
+        day="08/02/2025",
         time="19:00",
         status="new"
     )
