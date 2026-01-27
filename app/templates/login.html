@@ -10,7 +10,7 @@
 <div class="container">
   <div class="card">
     <h1>Pre-Orders</h1>
-    <p class="subtitle">Enter your pre-order code to continue</p>
+    <p class="subtitle">Welcome please log in to continue</p>
 
     <!-- Flash messages -->
     {% with messages = get_flashed_messages() %}
@@ -29,9 +29,11 @@
       <label>Email</label>
         {{ form.email(class="form-control", placeholder="Enter your restaurant email") }}
 
+      <label>Password</label>
         {{ form.password(class="form-control", placeholder="Password") }}
 
         {{ form.submit(class="button") }}
+        <p>email="admin@resto.com", password="1234"</p>
     </form>
 
     <div class="divider"></div>

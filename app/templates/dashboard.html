@@ -1,1 +1,32 @@
-hello
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <!-- Stats -->
+<section class="stats">
+  <div class="stat-card">
+    <p class="stat-label">Current Orders</p>
+    <p class="stat-value">{{ orders | list | length }}</p>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Pending Orders</p>
+    <p class="stat-value">
+      {{ orders | selectattr("status", "ne", "completed") | list | length }}
+    </p>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Completed Orders</p>
+    <p class="stat-value">
+      {{ orders | selectattr("status", "equalto", "completed") | list | length }}
+    </p>
+  </div>
+
+  <div class="stat-card">
+    <p class="stat-label">Approved Orders</p>
+    <p class="stat-value">
+      {{ orders | selectattr("status", "equalto", "approved") | list | length }}
+    </p>
+  </div>
+</section>
+{% endblock %}

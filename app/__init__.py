@@ -193,9 +193,29 @@ def seed_data():
         email="alice@email.com",
         num_people=2,
         time="19:00",
-        status = "completed"
+        status = "new"
     )
-    db.session.add(customer1)
+
+    customer2 = Customers(
+        restaurant_id=resto.id,
+        customer_name="John Kummar",
+        code=104,
+        email="john@email.com",
+        num_people=7,
+        time="19:00",
+        status="pending"
+    )
+
+    customer3 = Customers(
+        restaurant_id=resto.id,
+        customer_name="Lala Kummar",
+        code=106,
+        email="lala@email.com",
+        num_people=10,
+        time="19:00",
+        status="new"
+    )
+    db.session.add_all([customer1, customer2, customer3])
     db.session.commit()
 
     preorder1 = PreOrder(

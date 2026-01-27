@@ -18,3 +18,5 @@ class PreorderForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+
+    submit = SubmitField("Go to Dashboard")

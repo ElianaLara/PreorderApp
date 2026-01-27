@@ -52,6 +52,21 @@ def login():
 
     return render_template('login.html', form=form)
 
+@main.route('/dashboard', methods=['GET', 'POST'])
+#login_required
+def dashboard():
+    name = session.get('restaurant_name')
+    restaurant = Restaurant.query.filter_by(name=name).first()
+    customers = Customers.query.filter_by(restaurant_id=restaurant.id).all()
+
+    return render_template('dashboard.html', name=name, orders=customers)
+
+
+@main.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('main.login'))
+
 @main.route('/preorder/<int:code>', methods=['GET', 'POST'])
 def preorder(code):
 
@@ -65,6 +80,8 @@ def preorder(code):
     #  preorder_completed true and send email
     if len(table.preorders) >= table.num_people:
         preorder_completed = True
+        table.status="completed"
+        db.session.commit()
 
         # Build preorder text for email
         preorder_lines = []
