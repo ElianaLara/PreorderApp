@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, session, Blueprint, flash, request
-from .forms import CodeForm, PreorderForm
-from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem, MenuItemSize
+from .forms import CodeForm, PreorderForm, LoginForm
+from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem, MenuItemSize, Restaurant
 from . import db
 from .email import send_email
 
@@ -26,6 +26,31 @@ def home():
 
     return render_template('home.html', form=form)
 
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+
+        # Find the restaurant by email
+        restaurant = Restaurant.query.filter_by(email=email).first()
+
+        if not restaurant:
+            flash("No account found with that email.")
+            return redirect(url_for('main.login'))
+
+        # Check password (plain text)
+        if restaurant.password != password:
+            flash("Incorrect password.")
+            return redirect(url_for('main.login'))
+
+        # Login successful — store restaurant id in session
+        session['restaurant_id'] = restaurant.id
+        session['restaurant_name'] = restaurant.name
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('login.html', form=form)
 
 @main.route('/preorder/<int:code>', methods=['GET', 'POST'])
 def preorder(code):
@@ -36,11 +61,6 @@ def preorder(code):
     table = Customers.query.filter_by(code=code).first()
     preorders = table.preorders
     preorder_completed = False
-
-    # If table doesn’t exist, redirect
-    if not table:
-        flash("Table not found")
-        return redirect(url_for("main.home"))
 
     #  preorder_completed true and send email
     if len(table.preorders) >= table.num_people:
@@ -57,10 +77,6 @@ def preorder(code):
             for item in order.items:
                 if item.menu_item:
                     parts = []
-
-                    # Parent category if exists
-                    if item.menu_item.category.parent:
-                        parts.append(f"{item.menu_item.category.parent.name}:")
 
                     # Current category
                     parts.append(f"{item.menu_item.category.name}:")
@@ -93,6 +109,8 @@ def preorder(code):
             body=email_body
         )
 
+
+    # Menu logic
     def get_subcategories(cat):
         # Base structure for category
         cat_dict = {
@@ -123,7 +141,6 @@ def preorder(code):
             cat_dict.pop("items")
 
         return cat_dict
-
     menu_items = {}
     for category in top_categories:
         menu_items[category.name] = get_subcategories(category)
@@ -135,6 +152,7 @@ def preorder(code):
     # This is the forms logic
     form = PreorderForm()
 
+    #When a new order is submiteed logic
     if form.validate_on_submit():
         name = form.name.data.strip() if form.name.data else None
 
@@ -150,11 +168,44 @@ def preorder(code):
         if not name:
             flash("Please enter your name")
             return redirect(url_for("main.preorder", code=code))
+
         notes = form.notes.data.strip() if form.notes.data else None
-        items = request.form.getlist("items[]")
+        items = request.form.getlist("items[]")  # e.g. ["Curry - Large", "Wine - Bottle"]
 
         if not items:
             flash("Please add at least one item")
+            return redirect(url_for("main.preorder", code=code))
+
+        # --- Check required categories/subcategories ---
+        # Get all top-level required categories for this restaurant
+        required_cats = MenuCategory.query.filter_by(restaurant_id=table.restaurant_id, required=True).all()
+
+        # Build a set of category IDs from submitted items
+        submitted_cat_ids = set()
+        for item_text in items:
+            item_name = item_text.split(" - ")[0].strip()
+            menu_item = MenuItem.query.filter_by(name=item_name).first()
+            if menu_item:
+                submitted_cat_ids.add(menu_item.category_id)
+
+        # Function to get all subcategory names that are required but missing
+        def get_missing_required_subcats(cat):
+            missing = []
+            # If this category itself is required and not submitted
+            if cat.required and cat.id not in submitted_cat_ids:
+                missing.append(cat.name)
+            # Check recursively for subcategories
+            for subcat in cat.subcategories:
+                missing += get_missing_required_subcats(subcat)
+            return missing
+
+        # Collect all missing required subcategories
+        missing_required = []
+        for cat in required_cats:
+            missing_required += get_missing_required_subcats(cat)
+
+        if missing_required:
+            flash(f"You must select an item from the required categories: {', '.join(missing_required)}")
             return redirect(url_for("main.preorder", code=code))
 
         # ---- Save to DB ----
@@ -168,21 +219,14 @@ def preorder(code):
 
         # Add items
         for item_text in items:
-            # Example: "Wine - Bottle" or "Curry - Large"
             parts = item_text.split(" - ")
-            item_name = parts[0].strip()  # "Wine" or "Curry"
-            size_name = parts[1].strip() if len(parts) > 1 else None  # "Bottle" or "Large"
+            item_name = parts[0].strip()
+            size_name = parts[1].strip() if len(parts) > 1 else None
 
-            # Find the MenuItem
             menu_item = MenuItem.query.filter_by(name=item_name).first()
             size_obj = None
-
             if menu_item and size_name:
-                # Match size exactly from MenuItemSize
-                size_obj = MenuItemSize.query.filter_by(
-                    menu_item_id=menu_item.id,
-                    size=size_name
-                ).first()
+                size_obj = MenuItemSize.query.filter_by(menu_item_id=menu_item.id, size=size_name).first()
 
             if menu_item:
                 order_item = OrderItem(

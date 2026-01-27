@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, SubmitField, IntegerField
+from wtforms import StringField, SelectField, TextAreaField, SubmitField, IntegerField, EmailField, PasswordField
 from wtforms.validators import DataRequired, Optional
 
 
@@ -15,4 +15,6 @@ class PreorderForm(FlaskForm):
     submit = SubmitField("Update Preorder")
 
 
-
+class LoginForm(FlaskForm):
+    email = EmailField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])

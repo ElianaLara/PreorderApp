@@ -23,26 +23,20 @@
       {% endif %}
     {% endwith %}
 
-    {% if form.code.errors %}
-          {% for error in form.code.errors %}
-            <div class="flash-message error">
-              {{ error }}
-            </div>
-          {% endfor %}
-    {% endif %}
-
     <form method="POST" novalidate>
       {{ form.hidden_tag() }}
 
-      <label>Pre-Order Code</label>
-      {{ form.code(class="form-control", placeholder="Enter your code") }}
+      <label>Email</label>
+        {{ form.email(class="form-control", placeholder="Enter your restaurant email") }}
 
-      {{ form.submit(class="button") }}
+        {{ form.password(class="form-control", placeholder="Password") }}
+
+        {{ form.submit(class="button") }}
     </form>
 
     <div class="divider"></div>
 
-    <a href="/login">Restaurant Login →</a>
+    <a href="{{ url_for('main.home') }}" class="login-link">Go back to code →</a>
   </div>
 </div>
 
