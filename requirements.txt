@@ -5,3 +5,4 @@ WTForms
 WTForms-Components
 gunicorn
 Flask-Mail
+wtforms_components

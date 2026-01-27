@@ -1,8 +1,10 @@
 from flask import render_template, redirect, url_for, session, Blueprint, flash, request
-from .forms import CodeForm, PreorderForm, LoginForm
+from .forms import CodeForm, PreorderForm, LoginForm, CostumerForm
 from .models import Customers, MenuItem, MenuCategory, PreOrder, OrderItem, MenuItemSize, Restaurant
 from . import db
 from .email import send_email
+import random
+from datetime import datetime
 
 main = Blueprint("main", __name__)
 
@@ -60,22 +62,49 @@ def dashboard():
     customers = Customers.query.filter_by(restaurant_id=restaurant.id).all()
     active_tab = request.args.get('tab', 'orders')
     preorders = Customers.query.filter_by(restaurant_id=restaurant.id).join(PreOrder).all()
+    form = CostumerForm()
 
-    return render_template('dashboard.html', name=name, orders=customers, active_tab=active_tab, preorders=preorders)
+    if form.validate_on_submit():
+        # generate unique code
+        code = random.randint(10000, 99999)
+        while Customers.query.filter_by(code=code).first():
+            code = random.randint(10000, 99999)
+
+        day_str = form.date.data.strftime("%Y-%m-%d")
+        time_str = form.time.data.strftime("%H:%M")
+
+        new_customer = Customers(
+            restaurant_id=session['restaurant_id'],
+            customer_name=form.name.data,
+            code=code,
+            email=form.email.data,
+            num_people=form.num_people.data,
+            day=day_str,
+            time=time_str
+        )
+
+        db.session.add(new_customer)
+        db.session.commit()
+
+        flash('Customer added successfully!', 'success')
+        return redirect(url_for('main.dashboard'))
+    else:
+        flash("stupid")
+
+    return render_template('dashboard.html', name=name, orders=customers, active_tab=active_tab, preorders=preorders, form=form)
 
 @main.route('/update_order_status/<int:order_id>', methods=['POST'])
 def update_order_status(order_id):
     order = Customers.query.get_or_404(order_id)
     order.status = request.form['status']
     db.session.commit()
-    if order.status == "Approved":
+    if order.status == "approved":
         send_email(
-            subject=f"🎉 Preorder Completed for {order.name,}!!",
+            subject=f"🎉 Preorder Confirmed and approved for {order.customer_name,}!!",
             recipients=[order.email],
             body="Your order has been approved"
         )
-
-
+        flash("An email of confirmation has been sent.")
 
     return redirect(url_for('main.dashboard', tab='orders'))
 
@@ -84,13 +113,14 @@ def delete_order(order_id):
     order = Customers.query.get_or_404(order_id)
     db.session.delete(order)
     db.session.commit()
+    flash("Pre-order deleted successfully.")
     return redirect(url_for('main.dashboard', tab='orders'))
 
 @main.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
     order = Customers.query.get_or_404(order_id)
     name = session.get('restaurant_name')
-    return render_template('edit_order.html', order=order, name=name)
+    return render_template('view_order.html', order=order, name=name)
 
 @main.route('/logout')
 def logout():

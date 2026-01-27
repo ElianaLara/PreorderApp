@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, SubmitField, IntegerField, EmailField, PasswordField
+from wtforms import StringField, SelectField, TextAreaField, SubmitField, IntegerField, EmailField, PasswordField, DateField, TimeField
 from wtforms.validators import DataRequired, Optional
+from wtforms_components import TimeField
 
 
 class CodeForm(FlaskForm):
@@ -20,3 +21,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
 
     submit = SubmitField("Go to Dashboard")
+
+class CostumerForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired()])
+    num_people = IntegerField('Number of People', validators=[DataRequired()])
+    date = DateField('Date', validators=[DataRequired()])
+    time = TimeField('Time', validators=[DataRequired()])
+    submit = SubmitField("Create Preorder")

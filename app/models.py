@@ -30,7 +30,7 @@ class Customers(db.Model):
     num_people = db.Column(db.Integer, nullable=False)
     day = db.Column(db.String(120))
     time = db.Column(db.String(5), nullable=False)
-    status = db.Column(db.String, nullable=False)
+    status = db.Column(db.String, nullable=False, default='pending')
 
 
     preorders = db.relationship(
