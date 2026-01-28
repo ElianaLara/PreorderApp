@@ -96,6 +96,10 @@
     </div>
     {% endfor %}
   </div>
+
+   <a href="{{ url_for('main.trash') }}" class="btn-delete">
+    Bin
+  </a>
 </section>
 
 {% elif active_tab == 'create' %}
@@ -132,10 +136,10 @@
 
     {{ form.submit(class="button") }}
   </div>
-
-
 </form>
 </section>
 {% endif %}
+
+
 {% endblock %}
 

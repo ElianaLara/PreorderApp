@@ -1,3 +1,4 @@
+from datetime import datetime
 from . import db
 
 #  Association table for menuItem  and menuTag
@@ -31,6 +32,8 @@ class Customers(db.Model):
     day = db.Column(db.String(120))
     time = db.Column(db.String(5), nullable=False)
     status = db.Column(db.String, nullable=False, default='pending')
+    deleted = db.Column(db.Boolean, nullable=False, default=False)
+    deleted_at = db.Column(db.Date, nullable=True) #change dates to date time not string
 
 
     preorders = db.relationship(

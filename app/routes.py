@@ -59,9 +59,20 @@ def login():
 def dashboard():
     name = session.get('restaurant_name')
     restaurant = Restaurant.query.filter_by(name=name).first()
-    customers = Customers.query.filter_by(restaurant_id=restaurant.id).all()
+    customers = Customers.query.filter_by(
+        restaurant_id=restaurant.id,
+        deleted=False
+    ).all()
     active_tab = request.args.get('tab', 'orders')
-    preorders = Customers.query.filter_by(restaurant_id=restaurant.id).join(PreOrder).all()
+    preorders = (
+        Customers.query
+        .join(PreOrder)
+        .filter(
+            Customers.restaurant_id == restaurant.id,
+            Customers.deleted == False
+        )
+        .all()
+    )
     form = CostumerForm()
 
     if form.validate_on_submit():
@@ -86,10 +97,13 @@ def dashboard():
         db.session.add(new_customer)
         db.session.commit()
 
-        flash('Customer added successfully!', 'success')
+        flash('Customer added successfully! Email was sent', 'success')
+        send_email(
+            subject=f"Hi!! Preorder code",
+            recipients=[new_customer.email],
+            body="Your pre-order link has been generated please complete it before (date)"
+        )
         return redirect(url_for('main.dashboard'))
-    else:
-        flash("stupid")
 
     return render_template('dashboard.html', name=name, orders=customers, active_tab=active_tab, preorders=preorders, form=form)
 
@@ -111,15 +125,30 @@ def update_order_status(order_id):
 @main.route('/delete_order/<int:order_id>', methods=['POST'])
 def delete_order(order_id):
     order = Customers.query.get_or_404(order_id)
-    db.session.delete(order)
+    order.deleted = True
+    order.deleted_at = datetime.utcnow().date()
     db.session.commit()
     flash("Pre-order deleted successfully.")
     return redirect(url_for('main.dashboard', tab='orders'))
 
+@main.route('/trash')
+def trash():
+    orders = Customers.query.filter_by(deleted=True).all()
+    return render_template('trash.html', orders=orders)
+
+@main.route('/restore/<int:id>', methods=['POST'])
+def restore_order(id):
+    order = Customers.query.get_or_404(id)
+    order.deleted = False
+    db.session.commit()
+    return redirect(url_for('main.dashboard', tab='orders'))
+
+#to do does not work lol because why would it
 @main.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 def edit_order(order_id):
     order = Customers.query.get_or_404(order_id)
     name = session.get('restaurant_name')
+
     return render_template('view_order.html', order=order, name=name)
 
 @main.route('/logout')

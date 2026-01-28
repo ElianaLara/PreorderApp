@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="category">
+  <div class="orders-table">
+    <div class="orders-header">
+      <span>Customer</span>
+      <span>Code</span>
+      <span>Num People</span>
+      <span>Date</span>
+      <span>Time</span>
+      <span>Date deleted</span>
+      <span>Actions</span>
+    </div>
+
+    {% for order in orders %}
+    <div class="order-row">
+      <span>{{ order.customer_name }}</span>
+      <span>{{ order.code }}</span>
+      <span>{{ order.num_people }}</span>
+      <span>{{ order.day }}</span>
+      <span>{{ order.time }}</span>
+      <span>{{ order.deleted_at }}</span>
+
+        <form action="{{ url_for('main.restore_order', id=order.id) }}" method="POST" style="display:inline;">
+          <button type="submit" class="btn-view">
+            Restore
+          </button>
+        </form>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock%}
