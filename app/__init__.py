@@ -2,6 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_mail import Mail, Message
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 db = SQLAlchemy()
 mail = Mail()
@@ -36,6 +38,18 @@ def create_app():
         db.drop_all()
         db.create_all()
         seed_data()
+
+    from .tasks import delete_old_orders
+
+    scheduler = BackgroundScheduler()
+
+    scheduler.add_job(
+        func=lambda: run_with_app_context(app, delete_old_orders),
+        trigger="interval",
+        minutes=1
+    )
+
+    scheduler.start()
 
     return app
 
@@ -192,9 +206,9 @@ def seed_data():
         code=101,
         email="alice@email.com",
         num_people=2,
-        day="08/02/2025",
+        day="10/02/2025",
         time="19:00",
-        status = "new"
+        status = "pending"
     )
 
     customer2 = Customers(
@@ -203,9 +217,9 @@ def seed_data():
         code=104,
         email="john@email.com",
         num_people=7,
-        day = "08/02/2025",
+        day = "11/02/2025",
         time="19:00",
-        status="pending"
+        status="completed"
     )
 
     customer3 = Customers(
@@ -216,7 +230,7 @@ def seed_data():
         num_people=10,
         day="08/02/2025",
         time="19:00",
-        status="new"
+        status="approved"
     )
     db.session.add_all([customer1, customer2, customer3])
     db.session.commit()
@@ -237,3 +251,8 @@ def seed_data():
     db.session.commit()
 
     print("Database seeded successfully!")
+
+
+def run_with_app_context(app, task_func):
+    with app.app_context():
+        task_func()

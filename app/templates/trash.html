@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+
+<!-- Flash messages -->
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="flash-message">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
 <section class="category">
   <div class="orders-table">
     <div class="orders-header">
@@ -31,5 +43,7 @@
     {% endfor %}
   </div>
 </section>
+
+<a href="{{ url_for('main.dashboard', tab='orders') }}" class="submit"><- Go back to Dashboard</a>
 
 {% endblock%}

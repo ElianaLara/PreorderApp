@@ -1,0 +1,145 @@
+/* --- DASHBOARD --- */
+.dashboard {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+}
+
+/* --- PAGE TITLE --- */
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1e40af;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+
+/* --- SEARCH BAR --- */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+/* --- TABLE --- */
+.table-container {
+  overflow-x: auto;
+}
+
+.preorders-table {
+  width: 100%;
+  padding-bottom: 1rem;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.preorders-table th,
+.preorders-table td {
+  padding: 0.5rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.preorders-table thead {
+  background-color: #f3f4f6;
+}
+
+.preorders-table th {
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.preorders-table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.preorders-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.item-list {
+  margin: 0;
+  padding-left: 1rem;
+  list-style: disc inside;
+  color: #374151;
+}
+
+.empty {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* --- BACK BUTTON --- */
+.back-button-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0 1rem;
+  }
+
+  .search-input {
+    max-width: 100%;
+  }
+
+  .preorders-table th,
+  .preorders-table td {
+    padding: 0.5rem 0.7rem;
+  }
+}
+
+.print-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-print {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.btn-print.kitchen {
+    background-color: #726aea; /* red for kitchen */
+}
+
+.btn-print.kitchen:hover {
+    background-color: #37337e;
+}
+
+.btn-print.bar {
+    background-color: #6cc699; /* blue for bar */
+}
+
+.btn-print.bar:hover {
+    background-color: #3e4944;
+}

@@ -1,19 +1,16 @@
 from datetime import datetime, timedelta
-from yourapp import db, create_app
-from yourapp.models import Order
-
-app = create_app()
+from .models import Customers
+from . import db
 
 def delete_old_orders():
-    with app.app_context():
-        threshold = datetime.utcnow() - timedelta(days=30)
+    threshold = datetime.utcnow() - timedelta(days=30)
 
-        orders = Order.query.filter(
-            Order.deleted == True,
-            Order.deleted_at <= threshold
-        ).all()
+    orders = Customers.query.filter(
+        Customers.deleted == True,
+        Customers.deleted_at <= threshold
+    ).all()
 
-        for order in orders:
-            db.session.delete(order)
+    for order in orders:
+        db.session.delete(order)
 
-        db.session.commit()
+    db.session.commit()

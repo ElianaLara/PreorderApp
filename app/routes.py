@@ -133,8 +133,10 @@ def delete_order(order_id):
 
 @main.route('/trash')
 def trash():
+    flash("Orders in the bin get automatically deleted after 30 days")
+    name = session.get('restaurant_name')
     orders = Customers.query.filter_by(deleted=True).all()
-    return render_template('trash.html', orders=orders)
+    return render_template('trash.html', orders=orders, name=name)
 
 @main.route('/restore/<int:id>', methods=['POST'])
 def restore_order(id):
@@ -143,13 +145,6 @@ def restore_order(id):
     db.session.commit()
     return redirect(url_for('main.dashboard', tab='orders'))
 
-#to do does not work lol because why would it
-@main.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
-def edit_order(order_id):
-    order = Customers.query.get_or_404(order_id)
-    name = session.get('restaurant_name')
-
-    return render_template('view_order.html', order=order, name=name)
 
 @main.route('/logout')
 def logout():
@@ -364,3 +359,69 @@ def delete_preorder(preorder_id):
     flash("Order deleted")
     return redirect(request.referrer)
 
+@main.route('/view_preorder/<int:code>')
+def view_preorder(code):
+    name = session.get('restaurant_name')
+
+    # Get the customer by code
+    customer = Customers.query.filter_by(code=code).first_or_404()
+
+    # Get all preorders for this customer
+    preorders = PreOrder.query.filter_by(customer_id=customer.id).all()
+
+    return render_template('view_preorder.html', customer=customer, preorders=preorders, name=name)
+
+
+@main.route('/print/kitchen/<int:customer_id>')
+def print_kitchen(customer_id):
+    customer = Customers.query.get_or_404(customer_id)
+    preorders = PreOrder.query.filter_by(customer_id=customer.id).all()
+    name = session.get('restaurant_name')
+
+    summary = aggregate_items(preorders)
+    return render_template(
+        'print_orders.html',
+        customer=customer,
+        preorders=preorders,
+        section="Kitchen",
+        name=name,
+        summary=summary
+    )
+
+
+@main.route('/print/bar/<int:customer_id>')
+def print_bar(customer_id):
+    customer = Customers.query.get_or_404(customer_id)
+    preorders = PreOrder.query.filter_by(customer_id=customer.id).all()
+    name = session.get('restaurant_name')
+
+    summary = aggregate_items(preorders)
+    return render_template(
+        'print_orders.html',
+        customer=customer,
+        preorders=preorders,
+        section="Bar",
+        name=name,
+        summary=summary
+    )
+
+
+def aggregate_items(preorders):
+    """
+    Returns a list of dicts: [{'name': ..., 'category': ..., 'quantity': ...}, ...]
+    """
+    counts = {}
+    for order in preorders:
+        for item in order.items:
+            if not item.menu_item:
+                continue
+            key = item.menu_item.name
+            if key not in counts:
+                counts[key] = {
+                    'name': item.menu_item.name,
+                    'category': f"{item.menu_item.category.parent.name} / {item.menu_item.category.name}",
+                    'quantity': 1
+                }
+            else:
+                counts[key]['quantity'] += 1
+    return list(counts.values())

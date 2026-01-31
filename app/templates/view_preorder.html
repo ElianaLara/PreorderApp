@@ -1,4 +1,80 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
+
+{% block title %}Preorders for {{ customer.customer_name }}{% endblock %}
+
 {% block content %}
+<div class="dashboard">
+    <h2 class="page-title">{{ customer.customer_name }}'s Preorders</h2>
+
+    {% if preorders %}
+
+    <!-- SEARCH BAR -->
+    <div class="search-container">
+        <input type="text" id="searchPreorders" class="search-input" placeholder="Search menu items or person...">
+    </div>
+
+    <div class="table-container">
+        <table class="preorders-table" id="preordersTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Menu Item</th>
+                    <th>Size</th>
+                    <th>Category</th>
+                    <th>Person</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set row_index = 1 %}
+                {% for order in preorders %}
+                    {% for item in order.items %}
+                        {% if item.menu_item %}
+                        <tr>
+                            <td>{{ row_index }}</td>
+                            <td>{{ item.menu_item.name }}</td>
+                            <td>{{ item.size.size if item.size else '-' }}</td>
+                            <td>{{ item.menu_item.category.parent.name }} / {{ item.menu_item.category.name }}</td>
+                            <td>{{ order.person_name }}</td>
+                            <td>{{ order.notes or '-' }}</td>
+                        </tr>
+                        {% set row_index = row_index + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PRINT BUTTONS -->
+    <div class="print-buttons">
+        <button class="btn-print kitchen" onclick="printOrders('kitchen')">Kitchen Print</button>
+        <button class="btn-print bar" onclick="printOrders('bar')">Bar Print</button>
+    </div>
+    {% else %}
+        <p class="no-preorders">No preorders found for this customer.</p>
+    {% endif %}
+
+    <div class="back-button-container">
+        <a href="{{ url_for('main.dashboard', tab='orders') }}" class="submit">&larr; Back to Dashboard</a>
+    </div>
+
+</div>
+
+<!-- Include search functionality -->
+<script src="{{ url_for('static', filename='js/table_search.js') }}"></script>
+<script>
+    enableTableSearch('searchPreorders', 'preordersTable');
+
+    function printOrders(section) {
+    const customerId = {{ customer.id }};
+    const url = `/print/${section}/${customerId}`;
+
+    // Open in a new small window and print
+    const printWindow = window.open(url, 'Print', 'width=800,height=600');
+
+    printWindow.onafterprint = () => printWindow.close();
+}
+</script>
+{% endblock %}
 

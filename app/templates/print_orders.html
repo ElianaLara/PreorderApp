@@ -1,0 +1,82 @@
+{% block content %}
+<div class="print-container">
+
+    {% if preorders %}
+        {% for preorder in preorders %}
+
+            {% if preorder.notes %}
+                <p><strong>Order for:</strong> {{ preorder.person_name }}</p>
+                <p><strong>Notes:</strong> {{ preorder.notes }}</p>
+
+                <table class="preorders-table">
+                    <thead>
+                        <tr>
+                            <th>Menu Item</th>
+                            <th>Size</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in preorder.items %}
+                            {% if section == "Kitchen" and item.menu_item.category.parent.name == "Food" %}
+                            <tr>
+                                <td>{{ item.menu_item.name }}</td>
+                                <td>{{ item.size if item.size else '-' }}</td>
+                                <td>{{ item.menu_item.category.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                            </tr>
+                            {% elif section == "Bar" and item.menu_item.category.parent.name == "Drinks" %}
+                            <tr>
+                                <td>{{ item.menu_item.name }}</td>
+                                <td>{{ item.size if item.size else '-' }}</td>
+                                <td>{{ item.menu_item.category.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <hr>
+            {% endif %}
+
+        {% endfor %}
+
+        <h3>Total Summary</h3>
+        <table class="preorders-table">
+            <thead>
+                <tr>
+                    <th>Menu Item</th>
+                    <th>Category</th>
+                    <th>Total Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in summary %}
+                    {% if section == "Kitchen" and "Food" in item.category %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>{{ item.quantity }}</td>
+                    </tr>
+                    {% elif section == "Bar" and "Drinks" in item.category %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>{{ item.quantity }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <p>No {{ section }} orders found for this customer.</p>
+    {% endif %}
+
+</div>
+
+<script>
+    window.onload = function() { window.print(); }
+</script>
+{% endblock %}

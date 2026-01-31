@@ -51,6 +51,12 @@
 </div>
 
 {% if active_tab == 'orders' %}
+
+<div class="sort-controls">
+  <button type="button" onclick="sortByDate()">Sort by Date</button>
+  <button type="button" onclick="sortByStatus()">Sort by Status</button>
+</div>
+
 <section class="category">
   <div class="orders-table">
     <div class="orders-header">
@@ -87,11 +93,10 @@
               <button type="submit" class="btn-delete">Delete</button>
             </form>
 
-            <!-- Edit form -->
-            <form method="GET" action="{{ url_for('main.edit_order', order_id=order.id) }}">
+            <!-- View form -->
+            <form method="GET" action="{{ url_for('main.view_preorder', code=order.code) }}">
               <button type="submit" class="btn-view">View</button>
             </form>
-        </form>
       </span>
     </div>
     {% endfor %}
@@ -129,7 +134,7 @@
       {{ form.date(class="form-control", type="date") }}
     </div>
 
-    <div class="form-group full">
+    <div class="form-group">
       {{ form.time.label(class="form-label") }}
       {{ form.time(class="form-control") }}
     </div>
