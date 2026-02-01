@@ -97,6 +97,11 @@
             <form method="GET" action="{{ url_for('main.view_preorder', code=order.code) }}">
               <button type="submit" class="btn-view">View</button>
             </form>
+
+            <!-- Edit form -->
+            <form method="GET" action="{{ url_for('main.edit_preorder', code=order.code) }}">
+              <button type="submit" class="btn-edit">Edit</button>
+            </form>
       </span>
     </div>
     {% endfor %}

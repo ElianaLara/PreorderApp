@@ -388,6 +388,11 @@ def print_kitchen(customer_id):
         summary=summary
     )
 
+@main.route('/edit_preorder/<int:code>', methods=['POST'])
+def edit_preorder(code):
+
+    #customer=customer, preorders=preorders, name=name
+    return render_template('edit_preorder.html')
 
 @main.route('/print/bar/<int:customer_id>')
 def print_bar(customer_id):
@@ -404,6 +409,7 @@ def print_bar(customer_id):
         name=name,
         summary=summary
     )
+
 
 
 def aggregate_items(preorders):
