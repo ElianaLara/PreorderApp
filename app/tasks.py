@@ -26,9 +26,9 @@ def send_reminder():
         if not customer.day:
             continue
 
-        preorder_day = datetime.strptime(customer.day, "%Y-%m-%d")
+        preorder_day = datetime.strptime(customer.day, "%d/%m/%Y")
 
-        if customer.status != "completed" and (0 <= (preorder_day - daynow).days <= 2):
+        if customer.status != "completed" and (0 <= (preorder_day - daynow).days <= 2) and customer.status != "approved":
             send_email(
                 subject=f"📝 Reminder: Please Complete Your Preorder, {customer.customer_name}!",
                 recipients=[customer.email],

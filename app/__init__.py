@@ -46,13 +46,13 @@ def create_app():
     scheduler.add_job(
         func=lambda: run_with_app_context(app, delete_old_orders),
         trigger="interval",
-        day=1
+        days=1
     )
 
     scheduler.add_job(
         func=lambda: run_with_app_context(app, send_reminder),
         trigger="interval",
-        day=1
+        days=1
     )
 
     scheduler.start()

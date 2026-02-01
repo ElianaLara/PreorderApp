@@ -81,7 +81,7 @@ def dashboard():
         while Customers.query.filter_by(code=code).first():
             code = random.randint(10000, 99999)
 
-        day_str = form.date.data.strftime("%Y-%m-%d")
+        day_str = form.date.data.strftime("%d/%m/%Y")
         time_str = form.time.data.strftime("%H:%M")
 
         new_customer = Customers(
@@ -101,7 +101,7 @@ def dashboard():
         send_email(
             subject=f"Hi!! Preorder code",
             recipients=[new_customer.email],
-            body="Your pre-order link has been generated please complete it before (date)"
+            body=f"Your pre-order link has been generated please complete it 2 days before your reservation your code is {new_customer.code}"
         )
         return redirect(url_for('main.dashboard'))
 
