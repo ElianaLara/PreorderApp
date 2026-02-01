@@ -39,14 +39,20 @@ def create_app():
         db.create_all()
         seed_data()
 
-    from .tasks import delete_old_orders
+    from .tasks import delete_old_orders, send_reminder
 
     scheduler = BackgroundScheduler()
 
     scheduler.add_job(
         func=lambda: run_with_app_context(app, delete_old_orders),
         trigger="interval",
-        minutes=1
+        day=1
+    )
+
+    scheduler.add_job(
+        func=lambda: run_with_app_context(app, send_reminder),
+        trigger="interval",
+        day=1
     )
 
     scheduler.start()
