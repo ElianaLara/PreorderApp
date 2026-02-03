@@ -245,3 +245,12 @@
 .sort-controls button:hover {
   background-color: #254465;
 }
+
+.delete-checkbox {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 1rem;
+    font-weight: normal;
+    color: #d80000;
+    cursor: pointer;
+}

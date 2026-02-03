@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
+import os
 
+from dotenv import load_dotenv
 
+load_dotenv()
 db = SQLAlchemy()
 mail = Mail()
 
@@ -26,9 +29,9 @@ def create_app():
         MAIL_SERVER='smtp.gmail.com',
         MAIL_PORT=587,
         MAIL_USE_TLS=True,
-        MAIL_USERNAME='laraelianaespino14@gmail.com',
-        MAIL_PASSWORD='tzal nrrj jmgd inho',  # For Gmail, use App Password
-        MAIL_DEFAULT_SENDER=('Preorder App', 'laraelianaespino14@gmail.com')
+        MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
+        MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
+        MAIL_DEFAULT_SENDER=('Preorder App', os.environ.get('MAIL_USERNAME'))
     )
 
     mail.init_app(app)
@@ -66,7 +69,7 @@ def create_app():
 def seed_data():
     from .models import Restaurant, MenuCategory, Customers, PreOrder, OrderItem, MenuItem, MenuTag, MenuItemSize, SpiceLevel
     # --- Restaurants ---
-    resto = Restaurant(name="My Delhi Newcastle", email="admin@resto.com", password="1234")
+    resto = Restaurant(name="Sample Restaurant", email="admin@resto.com", password="1234")
 
     db.session.add(resto)
     db.session.commit()

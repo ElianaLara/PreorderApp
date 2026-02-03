@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Edit Customer{% endblock %}
+
+{% block content %}
+
+<div class="order">
+
+    <h2 class="order-name">Edit Customer: {{ customer.customer_name }}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <label>Name:
+            <input type="text" name="customer_name" value="{{ customer.customer_name }}">
+        </label>
+        <label>Email:
+            <input type="email" name="email" value="{{ customer.email }}">
+        </label>
+        <label>Number of People:
+            <input type="number" name="num_people" value="{{ customer.num_people }}">
+        </label>
+        <label>Day:
+            <input type="date" name="day" value="{{ customer.day }}">
+        </label>
+        <label>Time:
+            <input type="time" name="time" value="{{ customer.time }}">
+        </label>
+        <!-- Update button -->
+        <button type="submit" class="submit">Update Customer</button>
+    </form>
+
+    <a href="{{ url_for('main.dashboard', tab='orders') }}" class="submit"><- Go back to Dashboard</a>
+
+</div>
+{% endblock %}

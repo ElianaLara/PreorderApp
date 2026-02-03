@@ -388,11 +388,32 @@ def print_kitchen(customer_id):
         summary=summary
     )
 
-@main.route('/edit_preorder/<int:code>', methods=['POST'])
-def edit_preorder(code):
 
-    #customer=customer, preorders=preorders, name=name
-    return render_template('edit_preorder.html')
+@main.route('/edit_preorder/<int:code>', methods=['GET', 'POST'])
+def edit_preorder(code):
+    name = session.get('restaurant_name')
+
+    # Get customer by code
+    customer = Customers.query.filter_by(code=code).first_or_404()
+
+    # Handle form submission
+    if request.method == "POST":
+        # Update customer details
+        customer.customer_name = request.form.get("customer_name")
+        customer.email = request.form.get("email")
+        customer.num_people = request.form.get("num_people")
+        customer.day = request.form.get("day")
+        customer.time = request.form.get("time")
+
+        db.session.commit()
+        flash("Customer and preorders updated successfully!", "success")
+        return redirect(url_for("main.edit_preorder", code=code))
+
+    return render_template(
+        "edit_preorder.html",
+        customer=customer,
+        name=name
+    )
 
 @main.route('/print/bar/<int:customer_id>')
 def print_bar(customer_id):

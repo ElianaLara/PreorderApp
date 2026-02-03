@@ -145,10 +145,9 @@ body {
   padding: .75rem;
   background: #2f7cf6;
   color: white;
-  border: none;
   border-radius: 10px;
   font-size: 1rem;
-  margin: 0.5remadd-btn;
+  margin: 1rem;
 }
 
 .subcategory {
